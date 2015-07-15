@@ -1,6 +1,4 @@
 <?php
-//This is a comment just to make a commit
-
 namespace CrudViews\View\Helper;
 
 use Cake\View\Helper;
@@ -42,13 +40,6 @@ class CrudHelper extends Helper
 	 */
 	public $CrudData;
 	
-	/**
-	 * All the Field output-control objects indexed by the alias of the model they serve
-	 *
-	 * @var array
-	 */
-//	protected $_Field;
-
 	/**
 	 * Instance of some CrudField sub-type to do field-vlaue output (possibly wrapped in decorators)
 	 * 
