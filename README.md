@@ -20,10 +20,8 @@ Once the files are installed you'll need to make some changes to your app to get
 
 #### Bootstrap changes
 
-If you're not using ''Plugin::loadAll();'' in your config/bootstrap.php file, you'll need to add:
+If you're not using ```Plugin::loadAll();``` in your config/bootstrap.php file, you'll need to add:
 
-'''
+```
 Plugin::load('CrudViews', ['autoload' => true]);
-'''
-
-
+```
