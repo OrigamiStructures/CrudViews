@@ -36,15 +36,15 @@ improving consistency in your pages and your user interface.
 
 So you have three possible levels of use:
 
-#. Limited cherry-picked use
+1. Limited cherry-picked use
 
     * Choose optional {your}Controller setup
 
-#. General use to replaced baked Crud views
+2. General use to replaced baked Crud views
 
     * Choose optional AppController setup
 
-#. Advanced use to help standardize your views throughout your app
+3. Advanced use to help standardize your views throughout your app
 
     * Choose optional AppController setup
 
