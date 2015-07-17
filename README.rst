@@ -1,9 +1,4 @@
 
-    # Is used to denote page titles.
-    = Is used for sections in a page.
-    - Is used for subsections.
-    ~ Is used for sub-subsections
-    ^ Is used for sub-sub-sections.
 CrudViews plugin for CakePHP
 ############################
 
