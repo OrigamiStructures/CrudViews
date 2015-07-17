@@ -43,16 +43,18 @@ First let's cover the code required no matter what your use plans are.
 * bootstrap changes
 * AppController changes (required)
 
-**Bootstrap changes**
+Bootstrap changes
 ~~~~~~~~~~~~~~~~~~~~~
 
 Since there are several places where plugin files need to be extended or loaded 
 you'll need to use the autoload option::
 
- // your_app/config/bootstrap.php
- Plugin::load('CrudViews', ['autoload' => true]);
+	#/ app/config/bootstrap.php
+	Plugin::load('CrudViews', ['autoload' => true]);
 
-**AppController changes**
+.. _required-app-controller:
+
+AppController changes
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The plugin's ``AppController` needs to do some ``beforeRender()`` work so your 
