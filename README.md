@@ -48,7 +48,7 @@ First let's cover the code required no matter what your use plans are.
 * bootstrap changes
 * AppController changes (required)
 
- *Bootstrap changes*
+**Bootstrap changes**
 ~~~~~~~~~~~~~~~~~~
 
 If you're not using ```Plugin::loadAll();``` in your config/bootstrap.php file, 
@@ -58,7 +58,7 @@ you'll need to add:
 Plugin::load('CrudViews', ['autoload' => true]);
 ```
 
- *AppController changes*
+\ **AppController changes**
 ~~~~~~~~~~~~~~~~~~~~~~
 
 ```
