@@ -51,34 +51,39 @@ First let's cover the code required no matter what your use plans are.
 **Bootstrap changes**
 ~~~~~~~~~~~~~~~~~~~~~
 
-If you're not using ``Plugin::loadAll();`` in your config/bootstrap.php file, 
-you'll need to add:
+Since there are several places where plugin files need to be extended or loaded 
+you'll need to use the autoload option::
 
-```
-Plugin::load('CrudViews', ['autoload' => true]);
-```
+ // your_app/config/bootstrap.php
+ Plugin::load('CrudViews', ['autoload' => true]);
 
 **AppController changes**
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-```
-class AppController extends BaseController {
+The plugin's AppController needs to do some beforeRender() work so your 
+AppController should extend it and implement beforeRender() also::
+
+ namespace App\Controller;
+ use CrudViews\Controller\AppController as BaseController;
+ 
+ class AppController extends BaseController {
 	
 	/**
 	 * Pass this call through to the CrudView plugin
 	 * 
-	 * CrudView depends on this call to do important helper configuration
+	 * CrudView depends on this call to do important CrudHelper configuration
 	 * 
 	 * @param Event $event
 	 */
 	public function beforeRender(Event $event) {
 		parent::beforeRender($event);
+		// do whatever else you want
 	}
-
+ 
 	// all your other AppController code
 
-}
-```
+ }
+
 
 * AppController changes (optional)
 * {your}Controller changes (the option to AppController changes)
