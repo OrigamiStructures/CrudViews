@@ -1,6 +1,14 @@
-# CrudViews plugin for CakePHP
 
-## Installation
+    # Is used to denote page titles.
+    = Is used for sections in a page.
+    - Is used for subsections.
+    ~ Is used for sub-subsections
+    ^ Is used for sub-sub-sections.
+CrudViews plugin for CakePHP
+############################
+
+Installation
+============
 
 You can install this plugin into your CakePHP application using [composer](http://getcomposer.org).
 
@@ -10,7 +18,8 @@ The recommended way to install composer packages is:
 composer require your-name-here/CrudViews
 ```
 
-### Hooking the plugin into your app
+Hooking the plugin into your app
+--------------------------------
 
 Once the files are installed you'll need to make some changes to your app to get 
 everything connected. You'll have some options here so a little information 
@@ -27,11 +36,16 @@ improving consistency in your pages and your user interface.
 
 So you have three possible levels of use:
 
-# Limited cherry-picked use
+#. Limited cherry-picked use
+
     * Choose optional {your}Controller setup
-# General use to replaced baked Crud views
+
+#. General use to replaced baked Crud views
+
     * Choose optional AppController setup
-# Advanced use to help standardize your views throughout your app
+
+#. Advanced use to help standardize your views throughout your app
+
     * Choose optional AppController setup
 
 Some of the code is required, some will be optional depending on how extensively 
@@ -43,7 +57,8 @@ you want to tie the dynamic view system into your app.
 * {your}Controller changes (the option to AppController changes)
 * Choosing the dynamic CRUD views in a controller (required {your}Controller changes)
 
-#### Bootstrap changes
+Bootstrap changes
+~~~~~~~~~~~~~~~~~~
 
 If you're not using ```Plugin::loadAll();``` in your config/bootstrap.php file, 
 you'll need to add:
@@ -52,7 +67,8 @@ you'll need to add:
 Plugin::load('CrudViews', ['autoload' => true]);
 ```
 
-#### AppController changes
+AppController changes
+~~~~~~~~~~~~~~~~~~~~~~
 
 This is not strictly necessary. The idea here is that you're going to want the new dynamic CRUD views available across all controllers. This change will load the pivotal CrudHelper for all controllers.
 
