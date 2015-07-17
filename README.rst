@@ -100,7 +100,7 @@ Bootstrap changes
 ~~~~~~~~~~~~~~~~~~~~~
 
 Since there are several places where plugin files need to be extended or loaded 
-you'll need to use the autoload option::
+you'll need to use the autoload option:
 
 .. code:: php
 
@@ -113,10 +113,11 @@ AppController changes
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The plugin's ``AppController`` needs to do some ``beforeRender()`` work so your 
-``AppController`` should extend it and implement ``beforeRender()`` also::
+``AppController`` should extend it and implement ``beforeRender()`` also:
 
 .. code:: php
 
+	<?php
 	namespace App\Controller;
 	use CrudViews\Controller\AppController as BaseController;
 
@@ -137,6 +138,7 @@ The plugin's ``AppController`` needs to do some ``beforeRender()`` work so your
 	// all your other AppController code
 	
 	}
+	?>
 
 
 * AppController changes (optional)
