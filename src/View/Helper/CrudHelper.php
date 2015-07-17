@@ -225,6 +225,9 @@ class CrudHelper extends Helper
 	 * @return object CrudData object
 	 */
 	public function useCrudData($alias) {
+		if (!isset($this->_CrudData)) {
+			$this->_CrudData = new Collection();
+		}
 		if ($this->_CrudData->has($alias)) {
 			$this->CrudData = $this->_CrudData->load($alias);
 			$this->Field = $this->createFieldHandler($this->CrudData->strategy());
