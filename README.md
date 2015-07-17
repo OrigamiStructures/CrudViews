@@ -51,7 +51,7 @@ First let's cover the code required no matter what your use plans are.
 **Bootstrap changes**
 ~~~~~~~~~~~~~~~~~~~~~
 
-If you're not using ```Plugin::loadAll();``` in your config/bootstrap.php file, 
+If you're not using ``Plugin::loadAll();`` in your config/bootstrap.php file, 
 you'll need to add:
 
 ```
