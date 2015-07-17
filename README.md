@@ -43,16 +43,12 @@ So you have three possible levels of use:
 3. Advanced use to help standardize your views throughout your app
     * Choose optional AppController setup
 
-Some of the code is required, some will be optional depending on how extensively 
-you want to tie the dynamic view system into your app.
+First let's cover the code required no matter what your use plans are.
 
 * bootstrap changes
 * AppController changes (required)
-* AppController changes (optional)
-* {your}Controller changes (the option to AppController changes)
-* Choosing the dynamic CRUD views in a controller (required {your}Controller changes)
 
-Bootstrap changes
+ *Bootstrap changes*
 ~~~~~~~~~~~~~~~~~~
 
 If you're not using ```Plugin::loadAll();``` in your config/bootstrap.php file, 
@@ -62,23 +58,11 @@ you'll need to add:
 Plugin::load('CrudViews', ['autoload' => true]);
 ```
 
-AppController changes
+ *AppController changes*
 ~~~~~~~~~~~~~~~~~~~~~~
-
-This is not strictly necessary. The idea here is that you're going to want the new dynamic CRUD views available across all controllers. This change will load the pivotal CrudHelper for all controllers.
-
-Before the declaration of the AppController class, with your other ```use``` statements:
-
-```
-use CrudViews\Controller\AppController as BaseController;
-```
-
-Then change the class declaration and $helper property value
 
 ```
 class AppController extends BaseController {
-
-	public $helpers = ['CrudViews.Crud']; // add this to your list of other helpers
 	
 	/**
 	 * Pass this call through to the CrudView plugin
@@ -96,8 +80,24 @@ class AppController extends BaseController {
 }
 ```
 
+* AppController changes (optional)
+* {your}Controller changes (the option to AppController changes)
+* Choosing the dynamic CRUD views in a controller (required {your}Controller changes)
+
+This is not strictly necessary. The idea here is that you're going to want the new dynamic CRUD views available across all controllers. This change will load the pivotal CrudHelper for all controllers.
+
+Before the declaration of the AppController class, with your other ```use``` statements:
+
+```
+use CrudViews\Controller\AppController as BaseController;
+```
+
+Then change the class declaration and $helper property value
+
 ```
 class AppController extends BaseController {
+
+	public $helpers = ['CrudViews.Crud']; // add this to your list of other helpers
 	
 	/**
 	 * Pass this call through to the CrudView plugin
