@@ -38,7 +38,6 @@ So you have three possible levels of use:
 
 1. Limited cherry-picked use
     * Choose optional {your}Controller setup
-
 2. General use to replaced baked Crud views
     * Choose optional AppController setup
 3. Advanced use to help standardize your views throughout your app
