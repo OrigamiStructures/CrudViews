@@ -9,9 +9,9 @@ You can install this plugin into your CakePHP application using [composer](http:
 
 The recommended way to install composer packages is:
 
-```
+``
 composer require your-name-here/CrudViews
-```
+``
 
 Hooking the plugin into your app
 --------------------------------
@@ -57,7 +57,7 @@ you'll need to use the autoload option::
 AppController changes
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The plugin's ``AppController` needs to do some ``beforeRender()`` work so your 
+The plugin's ``AppController`` needs to do some ``beforeRender()`` work so your 
 ``AppController`` should extend it and implement ``beforeRender()`` also::
 
 	namespace App\Controller;
