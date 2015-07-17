@@ -1,3 +1,4 @@
+.. highlight:: php
 
 CrudViews plugin for CakePHP
 ############################
