@@ -52,20 +52,6 @@ you'll need to use the autoload option::
  // your_app/config/bootstrap.php
  Plugin::load('CrudViews', ['autoload' => true]);
 
-.. _app-controller:
-
-The App Controller
-==================
-
-As stated in the introduction, the ``AppController`` class is the
-parent class to all of your application's controllers.
-``AppController`` itself extends the :php:class:`Controller` class included in the
-CakePHP core library. ``AppController`` is defined in
-``/app/Controller/AppController.php`` as follows::
-
-    class AppController extends Controller {
-    }
-
 **AppController changes**
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
