@@ -1,57 +1,3 @@
-We could use the following database schema for the ``Attachment`` model:
-
-.. code:: sql
-
-    CREATE table attachments (
-        `id` int(10) unsigned NOT NULL auto_increment,
-        `model` varchar(20) NOT NULL,
-        `foreign_key` int(11) NOT NULL,
-        `name` varchar(32) NOT NULL,
-        `attachment` varchar(255) NOT NULL,
-        `dir` varchar(255) DEFAULT NULL,
-        `type` varchar(255) DEFAULT NULL,
-        `size` int(11) DEFAULT 0,
-        `active` tinyint(1) DEFAULT 1,
-        PRIMARY KEY (`id`)
-    );
-
-Our attachment records would thus be able to have a name and be
-activated or deactivated on the fly. The schema is simply an example,
-and such functionality would need to be implemented within your
-application.
-
-Once the ``attachments`` table has been created, we would create the
-following model:
-
-.. code:: php
-
-    <?php
-    class Attachment extends AppModel {
-        public $actsAs = array(
-            'Upload.Upload' => array(
-                'attachment' => array(
-                    'thumbnailSizes' => array(
-                        'xvga' => '1024x768',
-                        'vga' => '640x480',
-                        'thumb' => '80x80',
-                    ),
-                ),
-            ),
-        );
-
-        public $belongsTo = array(
-            'Post' => array(
-                'className' => 'Post',
-                'foreignKey' => 'foreign_key',
-            ),
-            'Message' => array(
-                'className' => 'Message',
-                'foreignKey' => 'foreign_key',
-            ),
-        );
-    }
-    ?>
-
 CrudViews plugin for CakePHP
 ############################
 
@@ -62,9 +8,7 @@ You can install this plugin into your CakePHP application using [composer](http:
 
 The recommended way to install composer packages is:
 
-``
-composer require your-name-here/CrudViews
-``
+``composer require your-name-here/CrudViews`` // what? I've never done this
 
 Hooking the plugin into your app
 --------------------------------
@@ -117,7 +61,6 @@ The plugin's ``AppController`` needs to do some ``beforeRender()`` work so your
 
 .. code:: php
 
-	<?php
 	namespace App\Controller;
 	use CrudViews\Controller\AppController as BaseController;
 
@@ -125,8 +68,6 @@ The plugin's ``AppController`` needs to do some ``beforeRender()`` work so your
 	
 		/**
 		 * Pass this call through to the CrudView plugin
-		 * 
-		 * CrudView depends on this call to do important CrudHelper configuration
 		 * 
 		 * @param Event $event
 		 */
@@ -138,8 +79,6 @@ The plugin's ``AppController`` needs to do some ``beforeRender()`` work so your
 	// all your other AppController code
 	
 	}
-	?>
-
 
 * AppController changes (optional)
 * {your}Controller changes (the option to AppController changes)
