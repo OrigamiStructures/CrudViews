@@ -21,7 +21,3 @@ $this->end();
 	</ul>
 	<p><?= $this->Paginator->counter() ?></p>
 </div>
-<?php
-
-//$this->Crud->useCrudData('Navigators');
-//echo $this->element('Navigators/li_link');

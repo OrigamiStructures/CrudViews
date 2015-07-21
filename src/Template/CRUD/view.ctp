@@ -105,15 +105,11 @@ foreach ($this->Crud->columns() as $field => $data) {
 <?php
 // Now show the related table data
 
-//debug($this->Crud->associations());
 $associations = collection($this->Crud->associations());
 $associated = $associations->filter(function($association, $foreignKey) {
 	return stristr($association['class'], 'HasMany') || stristr($association['class'], 'BelongsToMany');
 });
-////		debug($$entityName);
 foreach ($associated as $assoc) :
-//	debug($$entityName);
-//	debug($assoc['property']);
 ?>
 	<div class="related row">
 		<div class="column large-12">
@@ -138,6 +134,6 @@ foreach ($associated as $assoc) :
 		// and make the table view
 		// this is why we need to have an external method to do the setup
 		// there are no action or field setups in place doing things from here
-		echo $this->element('/CRUD/crud_index_table');
+		echo $this->element('CrudViews.CRUD/crud_index_table');
 	endif;
 endforeach;
