@@ -65,6 +65,14 @@ The plugin's ``AppController`` needs to do some ``beforeRender()`` work so your
 	use CrudViews\Controller\AppController as BaseController;
 
 	class AppController extends BaseController {
+
+		/**
+		 * Pass this call through to CrudView plugin
+		 */
+		public function beforeFilter(Event $event) {
+			parent::beforeFilter();
+			// do whatever else you want
+		}
 	
 		/**
 		 * Pass this call through to the CrudView plugin
@@ -80,6 +88,16 @@ The plugin's ``AppController`` needs to do some ``beforeRender()`` work so your
 	
 	}
 
+If you want to use CrudViews to make the four standard views in all your 
+controllers dynamic you just have to add one more thing to *AppContoller*
+
+.. code:: php
+
+	// in the initialize() method 
+	$this->connectCrudViews('all');
+
+
+STUFF TO REWRITE ----------------------------------
 * AppController changes (optional)
 * {your}Controller changes (the option to AppController changes)
 * Choosing the dynamic CRUD views in a controller (required {your}Controller changes)
