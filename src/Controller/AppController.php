@@ -9,7 +9,7 @@ use Cake\Event\Event;
 
 class AppController extends Controller {
 	
-	public $helpers = ['CrudViews.Crud'];
+//	public $helpers = ['CrudViews.Crud'];
 	
 	public $dynamicActions = [];
 	
