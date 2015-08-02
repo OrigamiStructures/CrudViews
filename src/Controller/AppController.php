@@ -17,6 +17,10 @@ class AppController extends Controller {
 
 	use CrudConfig;
 	
+	public function initialize() {
+		parent::initialize();
+	}
+	
 	public function beforeFilter(Event $event) {
 		$this->dynamic = FALSE;
 		
