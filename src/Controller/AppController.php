@@ -124,6 +124,7 @@ class AppController extends Controller {
 		} else {
 			parent::render($view, $layout);
 		}
+		return $this->response;
 	}
 
 }
