@@ -37,7 +37,7 @@ class AppController extends Controller {
 					$this->$method($this->request->controller);
 					debug('standard');
 				} else {
-					$method = strtolower($this->request->controller) . ucfirst($this->request->action);
+					$method = $this->request->action;
 					// need an exception check here
 					$this->$method();
 					debug('custom');
