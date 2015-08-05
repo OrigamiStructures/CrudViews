@@ -138,21 +138,21 @@ class AppController extends BaseController {
 Once a specific CrudData object is selected, you can get the AssociationCollection 
 for it or you can get a specific named association. To get the full collection:
 
-```php
-$associations = $this->helper->CrudData->associationCollection();
-```
+.. code:: php
+
+	$associations = $this->helper->CrudData->associationCollection();
 
 To get a specific Association object:
 
-```php
-$this->helper->CrudData->associationCollection('projects');
-```
+.. code:: php
+
+	$this->helper->CrudData->associationCollection('projects');
 
 This object can run proxy calls to the associated Table object like this:
 
-```php
-$this->helper->CrudData->associationCollection('projects')->displayField();
-```
+.. code:: php
+	
+	$this->helper->CrudData->associationCollection('projects')->displayField();
 
 ##Access to Associated Data in the Parent Entity
 
@@ -168,23 +168,24 @@ The since there is no way for `$field` to carry enough information for
 to these deeper levels of the parent entity, in the cases where you want a call
 to accomplish this you'll need to do something like this:
 
-```php
-// psuedo code
+.. code:: php
 
-if ( $this->needDeeperData() ) {
-    $association_entity = $this->getAssociationEntityName(); // lowercase singular of the association alias
-    $original_entity = clone $this->Crud->entity; // Crud is your instance of CrudHelper
-    $this->Crud->entity = $original_entity->$association_entity;
+	// psuedo code
+			
+	if ( $this->needDeeperData() ) {
+		$association_entity = $this->getAssociationEntityName(); // lowercase singular of the association alias
+		$original_entity = clone $this->Crud->entity; // Crud is your instance of CrudHelper
+		$this->Crud->entity = $original_entity->$association_entity;
+		
+		// now your ready for your call. Adjust the value of $field if necessary
+		$this->Crud->output($field);
+		
+		// now switch back to the original entity
+		$this->Crud->entity = clone $original_entity;
+	} else {
+		$this->Crud->output($field);
+	}
 
-    // now your ready for your call. Adjust the value of $field if necessary
-    $this->Crud->output($field);
-
-    // now switch back to the original entity
-    $this->Crud->entity = clone $original_entity;
-} else {
-    $this->Crud->output($field);
-}
-```
 NOTE TO SELF ===================
 
 A helper method that handles this entity swapping would be ideal
