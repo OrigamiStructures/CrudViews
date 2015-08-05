@@ -153,3 +153,40 @@ This object can run proxy calls to the associated Table object like this:
 ```php
 $this->helper->CrudData->associationCollection('projects')->displayField();
 ```
+
+##Access to Associated Data in the Parent Entity
+
+Calls to `CrudHelper::output($field)` will eventually output `$this->entity->$field` 
+where `entity` is the Entity for the current CrudData object. This object may have 
+associated data included and there may be situations where you want to include 
+some of the associated data fields in the output of the parent. For example a 
+parent's foreign key would typically be replaced with the `displayField` which 
+would be found in the contained Entity. 
+
+The since there is no way for `$field` to carry enough information for 
+`CrudHelper::output()` or the Decorators that wrap the decorator to drill down 
+to these deeper levels of the parent entity, in the cases where you want a call
+to accomplish this you'll need to do something like this:
+
+```php
+// psuedo code
+
+if ( $this->needDeeperData() ) {
+    $association_entity = $this->getAssociationEntityName(); // lowercase singular of the association alias
+    $original_entity = clone $this->Crud->entity; // Crud is your instance of CrudHelper
+    $this->Crud->entity = $original_entity->$association_entity;
+
+    // now your ready for your call. Adjust the value of $field if necessary
+    $this->Crud->output($field);
+
+    // now switch back to the original entity
+    $this->Crud->entity = clone $original_entity;
+} else {
+    $this->Crud->output($field);
+}
+```
+NOTE TO SELF ===================
+
+A helper method that handles this entity swapping would be ideal
+
+================================
