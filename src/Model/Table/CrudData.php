@@ -326,7 +326,7 @@ use InstanceConfigTrait;
 			return NULL;
 		}
 	}
-
+	
 	public function filteredAssociations() {
 		return $this->_associationFilter;
 	}
@@ -335,6 +335,21 @@ use InstanceConfigTrait;
 //		if 
 //		return $this->_entityName($this->alias());
 //	}
+	
+	/**
+	 * Get the collection of association objects or a particular association object
+	 * 
+	 * @param name $association The association object to get
+	 * @return object AssociationCollection, BelongsTo, BelongsToMany, HasMany or HasOne
+	 */
+	public function associationCollection($association = null) {
+		if (is_null($association)) {
+			return $this->_associationCollection();
+		} else {
+			return $this->_associationCollection()->get($name);
+		}
+		
+	}
 
 	/**
 	 * Get the AssociationCollection for this Model
