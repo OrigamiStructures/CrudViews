@@ -133,3 +133,23 @@ class AppController extends BaseController {
 }
 ```
 
+##Using CrudData
+
+Once a specific CrudData object is selected, you can get the AssociationCollection 
+for it or you can get a specific named association. To get the full collection:
+
+```php
+$associations = $this->helper->CrudData->associationCollection();
+```
+
+To get a specific Association object:
+
+```php
+$this->helper->CrudData->associationCollection('projects');
+```
+
+This object can run proxy calls to the associated Table object like this:
+
+```php
+$this->helper->CrudData->associationCollection('projects')->displayField();
+```
