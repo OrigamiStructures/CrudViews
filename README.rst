@@ -112,26 +112,26 @@ use CrudViews\Controller\AppController as BaseController;
 
 Then change the class declaration and $helper property value
 
-```
-class AppController extends BaseController {
+.. code:: php
 
-	public $helpers = ['CrudViews.Crud']; // add this to your list of other helpers
+	class AppController extends BaseController {
 	
-	/**
-	 * Pass this call through to the CrudView plugin
-	 * 
-	 * CrudView depends on this call to do important helper configuration
-	 * 
-	 * @param Event $event
-	 */
-	public function beforeRender(Event $event) {
-		parent::beforeRender($event);
+		public $helpers = ['CrudViews.Crud']; // add this to your list of other helpers
+		
+		/**
+		 * Pass this call through to the CrudView plugin
+		 * 
+		 * CrudView depends on this call to do important helper configuration
+		 * 
+		 * @param Event $event
+		 */
+		public function beforeRender(Event $event) {
+			parent::beforeRender($event);
+		}
+		
+		// all your other AppController code
+		
 	}
-
-	// all your other AppController code
-
-}
-```
 
 ##Using CrudData
 
@@ -174,6 +174,7 @@ to accomplish this you'll need to do something like this:
 			
 	if ( $this->needDeeperData() ) {
 		$association_entity = $this->getAssociationEntityName(); // lowercase singular of the association alias
+
 		$original_entity = clone $this->Crud->entity; // Crud is your instance of CrudHelper
 		$this->Crud->entity = $original_entity->$association_entity;
 		
