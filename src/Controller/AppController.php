@@ -25,26 +25,26 @@ class AppController extends Controller {
 		$this->dynamic = FALSE;
 		
 		if ($this->dynamicActions === TRUE || in_array("{$this->request->controller}.{$this->request->action}", $this->dynamicActions)) {
-			debug('this one is connected');
+//			debug('this one is connected');
 //			debug($this->_CrudData->load($this->request->controller)->strategy());
 			if (!isset($this->_CrudData) || 
 					!$this->_CrudData->has($this->request->controller) && 
 					$this->_CrudData->load($this->request->controller)->strategy() !== $this->request->action) 
 				{
-				debug('and it needs setup');
+//				debug('and it needs setup');
 				if (in_array($this->request->action, $this->crudActions)) {
 					$method = 'config' . ucfirst($this->request->action);
 					$this->$method($this->request->controller);
-					debug('standard');
+//					debug('standard');
 				} else {
 					$method = $this->request->action;
 					// need an exception check here
 					$this->$method();
-					debug('custom');
+//					debug('custom');
 				}
 //				die;
 			} else {
-				debug('but it doesn\'t need setup');
+//				debug('but it doesn\'t need setup');
 //				debug($this->_CrudData->load($this->request->controller));
 			}
 			$this->dynamic = TRUE;
