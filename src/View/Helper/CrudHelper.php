@@ -403,4 +403,12 @@ class CrudHelper extends Helper
 		return $properties;
 	}
 	
+	public function swapEntity($new_entity) {
+		$this->holdEntity = clone $this->entity;
+		$this->entity = $new_entity;
+	}
+	
+	public function restoreEntity() {
+		$this->entity = clone $this->holdEntity;
+	}
 }

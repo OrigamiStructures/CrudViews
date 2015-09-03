@@ -131,7 +131,7 @@ use InstanceConfigTrait;
 	 *
 	 * @var array
 	 */
-	protected $_columns;
+	public $_columns;
 
 	/**
 	 * AssociationFilter utility
@@ -297,8 +297,15 @@ use InstanceConfigTrait;
 		return $this->_associations;
 	}
 
-	public function columns() {
-		return $this->_columns;
+	public function columns($column = NULL) {
+		$value = NULL;
+		if (is_null($column)) {
+			$value = $this->_columns;
+		} elseif (is_string($column)) {
+			$value = isset($this->_columns[$column]) ? $this->_columns[$column] : NULL;
+		}
+		return $value;
+		
 //		if (isset($this->_columns)) {
 //			return $this->_columns;
 //		} else {
