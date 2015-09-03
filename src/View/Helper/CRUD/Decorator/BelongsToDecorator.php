@@ -3,6 +3,7 @@
 namespace CrudViews\View\Helper\CRUD\Decorator;
 
 use Cake\Utility\Inflector;
+use CrudViews\Lib\NameConventions;
 
 /**
  * BelongsToDecorator will make a standard link to owning records
@@ -30,39 +31,29 @@ class BelongsToDecorator extends FieldDecorator {
 			// if this is a belongsTo field, make it a link to the parent record
 			if (in_array($field, $this->helper->foreignKeys()) && $this->belongsTo = $this->fieldIsKey($field, 'manyToOne')) {
 				
-				$nameable = new \CrudViews\Lib\NameConventions($field);
+				$nameable = new NameConventions($field);
 				$association_name = strtolower($nameable->modelName);
+				
+				// This is the name of the associated entity. It will also be 
+				// the node on the parent entity where the associated entity 
+				// can be found (the conventional location)
 				$association_entity = Inflector::singularize($association_name);
+				// This is going to contain the associated Table object
 				$association = $this->helper->CrudData->associationCollection()->get($association_name);
-//				debug($this->helper->entity->$association_entity);
-//				debug(!is_null($association));
-////				debug(get_parent_class($this->helper->entity->$association_entity));
-//				debug(is_subclass_of($this->helper->entity->$association_entity, 'Cake\ORM\Entity'));
+
 				if (!is_null($association) && is_subclass_of($this->helper->entity->$association_entity, 'Cake\ORM\Entity')) {
-					$field = $association->displayField();
-					$this->helper->CrudData->_columns[$field] = ['type' => 'string']; ////// THIS CASCADES TO ATTRIBUTES TOO
-//					debug($field);die;
-					$this->helper->swapEntity($this->helper->entity->$association_entity);
-					$output = $this->base->output($field, $options);
-					$this->helper->restoreEntity();
+					$displayField = $association->displayField();
+					$output = $this->helper->entity->$association_entity->$displayField;
+					
+//					$this->helper->CrudData->_columns[$field] = ['type' => 'string']; ////// THIS CASCADES TO ATTRIBUTES TOO
+//					
+//					$this->helper->swapEntity($this->helper->entity->$association_entity);
+//					$output = $this->base->output($displayField, $options);
+//					$this->helper->restoreEntity();
+					
 				} else {
 					$output = $this->base->output($field, $options);
 				}
-				
-////				debug($nameable);
-//				debug($association_name);
-//				debug($association_entity);
-//			
-////				debug($this->helper->entity);
-////				debug($this->helper->CrudData->associationCollection()->get('projects')->displayField());
-//				debug($this->helper->CrudData->associationCollection()->get($association_name));
-//				$association_object = $this->helper->CrudData->associationCollection()->get($association_name);
-//				$displayField = $association_object->displayField();
-//				debug($displayField);
-//				debug($this->helper->entity);
-//				debug($this->helper->entity->$association_entity->$displayField);
-				
-//				$output = $this->base->output($field, $options);
 
 				return ( $this->helper->entity->has($this->belongsTo['property']) ?
 								$this->helper->Html->link(
@@ -70,7 +61,7 @@ class BelongsToDecorator extends FieldDecorator {
 										[
 									'controller' => $this->belongsTo['name'],
 									'action' => 'view',
-									$output //This should be a reference to the associate model's primary key
+									$this->helper->entity->$field //This should be a reference to the associate model's primary key
 										]
 								) :
 								'' );
