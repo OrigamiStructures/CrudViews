@@ -40,7 +40,7 @@ class BelongsToDecorator extends FieldDecorator {
 //				debug(is_subclass_of($this->helper->entity->$association_entity, 'Cake\ORM\Entity'));
 				if (!is_null($association) && is_subclass_of($this->helper->entity->$association_entity, 'Cake\ORM\Entity')) {
 					$field = $association->displayField();
-					$this->helper->CrudData->columns($field) = ['type' => 'string']; ////// THIS CASCADES TO ATTRIBUTES TOO
+					$this->helper->CrudData->_columns[$field] = ['type' => 'string']; ////// THIS CASCADES TO ATTRIBUTES TOO
 //					debug($field);die;
 					$this->helper->swapEntity($this->helper->entity->$association_entity);
 					$output = $this->base->output($field, $options);
