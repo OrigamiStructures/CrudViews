@@ -116,11 +116,13 @@ class AppController extends Controller {
 	 */
     public function render($view = null, $layout = null) {
 		if ($this->dynamic && in_array($this->request->action, $this->crudActions)) {
+			$view = is_null($view) ? "CrudViews.CRUD/{$this->request->action}" : $view;
+			$layout = is_null($layout) ? 'default' : $layout;
 			// This still might need to detect custom action hookups
 			// right now it only works for the standard 4
 			// but I think this is actually all we will want it to do
 			// needs review and discussion
-			return parent::render("CrudViews.CRUD/{$this->request->action}");
+			return parent::render($view, $layout);
 		} else {
 			parent::render($view, $layout);
 		}
