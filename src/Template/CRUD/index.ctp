@@ -1,2 +1,2 @@
 <?php
-$this->element('CrudViews.CRUD/index');
+echo $this->element('CrudViews.CRUD/index');
