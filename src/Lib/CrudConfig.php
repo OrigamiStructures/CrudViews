@@ -28,7 +28,7 @@ trait CrudConfig {
 	
 	protected $_RecordActions;
 	
-	protected $blacklist = ['created', 'modified', 'id', 'updated'];
+	protected $blacklist = ['created', 'modified', 'id'];
 	
 	protected $_defaultModelActionPatterns = [
 		'index' => [['new' => 'add']],
