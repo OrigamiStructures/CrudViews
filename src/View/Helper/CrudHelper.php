@@ -8,7 +8,11 @@ use CrudViews\Lib\Collection;
 use Cake\Utility\Inflector;
 use CrudViews\Lib\NameConventions;
 use CrudViews\Lib\CrudConfig;
-use CRUD\Decorator\TableCellDecorator;
+use CrudViews\View\Helper\CRUD\Decorator\TableCellDecorator;
+use CrudViews\View\Helper\CRUD\Decorator\BelongsToDecorator;
+use CrudViews\View\Helper\CRUD\CrudFields;
+use CrudViews\View\Helper\CRUD\Decorator\LabelDecorator;
+use CrudViews\View\Helper\CRUD\FieldSetups;
 
 class CrudHelper extends Helper
 {
@@ -91,7 +95,7 @@ class CrudHelper extends Helper
 		}   
 		
 		$this->useCrudData($this->_defaultAlias->name);
-		$this->FieldSetups = new CRUD\FieldSetups($this);
+		$this->FieldSetups = new FieldSetups($this);
 
 	}
 	
@@ -329,19 +333,19 @@ class CrudHelper extends Helper
 			case 'index':
 //				debug('setup index decoration');
 				return new TableCellDecorator(
-					new CRUD\Decorator\BelongsToDecorator(
-						new CRUD\CrudFields($this)
+					new BelongsToDecorator(
+						new CrudFields($this)
 					));
 				break;
 			case 'view':
 //				debug('setup view decoration');
-				return new CRUD\Decorator\BelongsToDecorator(
-						new CRUD\CrudFields($this)
+				return new BelongsToDecorator(
+						new CrudFields($this)
 					);
 				break;
 			case 'edit':
 			case 'add':
-				return new CRUD\CrudFields($this);
+				return new CrudFields($this);
 				break;
 
 			// your custom setups or the default result if your's isn't found
@@ -349,7 +353,7 @@ class CrudHelper extends Helper
 				if (method_exists($this->FieldSetups, $action)) {
 					return $this->FieldSetups->$action($this);
 				} else {
-					return new CRUD\Decorator\LabelDecorator(new CRUD\CrudFields($this));
+					return new LabelDecorator(new CrudFields($this));
 				}
 		}
 	}
