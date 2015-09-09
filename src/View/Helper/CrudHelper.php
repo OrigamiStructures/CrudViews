@@ -8,6 +8,7 @@ use CrudViews\Lib\Collection;
 use Cake\Utility\Inflector;
 use CrudViews\Lib\NameConventions;
 use CrudViews\Lib\CrudConfig;
+use CRUD\Decorator\TableCellDecorator;
 
 class CrudHelper extends Helper
 {
@@ -327,7 +328,7 @@ class CrudHelper extends Helper
 			// the four cake-standard crud setups
 			case 'index':
 //				debug('setup index decoration');
-				return new CRUD\Decorator\TableCellDecorator(
+				return new TableCellDecorator(
 					new CRUD\Decorator\BelongsToDecorator(
 						new CRUD\CrudFields($this)
 					));
