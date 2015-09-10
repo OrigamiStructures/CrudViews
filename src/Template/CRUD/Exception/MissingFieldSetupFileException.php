@@ -10,7 +10,7 @@
  * @since         3.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Cake\Controller\Exception;
+namespace CrudViews\Template\CRUD\Exception;
 
 use Cake\Core\Exception\Exception;
 
@@ -18,7 +18,7 @@ use Cake\Core\Exception\Exception;
  * Missing Action exception - used when a controller action
  * cannot be found, or when the controller's isAction() method returns false.
  */
-class MissingActionException extends Exception
+class MissingFieldSetupFileException extends Exception
 {
 
     /**

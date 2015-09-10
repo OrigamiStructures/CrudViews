@@ -12,7 +12,11 @@ use CrudViews\View\Helper\CRUD\Decorator\TableCellDecorator;
 use CrudViews\View\Helper\CRUD\Decorator\BelongsToDecorator;
 use CrudViews\View\Helper\CRUD\CrudFields;
 use CrudViews\View\Helper\CRUD\Decorator\LabelDecorator;
-use CrudViews\View\Helper\CRUD\FieldSetups;
+use CrudViews\Template\CRUD\Exception\MissingFieldSetupFileException;
+use Cake\Core\Exception\Exception;
+
+//Here's the location of your custom FieldSetups
+use App\View\Helper\CrudViewResources\FieldSetups;
 
 class CrudHelper extends Helper
 {
@@ -93,11 +97,29 @@ class CrudHelper extends Helper
 		foreach ($config['actions'] as $name => $pattern) {
 			$this->{$name} = $pattern;
 		}   
-		
-		$this->useCrudData($this->_defaultAlias->name);
-		$this->FieldSetups = new FieldSetups($this);
+        try {
+            $this->loadFieldSetups();
+        } catch (Exception $exc) {
+            echo $exc->getMessage();
+            DIE;
+//            throw new Exception('didn\'t setup');
+        }
 
-	}
+
+        debug($this->FieldSetups);
+        die;
+		$this->useCrudData($this->_defaultAlias->name);
+    }
+    
+    protected function loadFieldSetups() {
+        $path = env('DOCUMENT_ROOT') . DS. 'src' . DS . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'FieldSetups.php';
+        if(!$handle = fopen($path, 'r')){
+            throw new MissingFieldSetupFileException('The field setup file is missing');
+        } else {
+            fclose($handle);
+            $this->FieldSetups = new FieldSetups($this);
+        }
+    }
 	
 	/**
 	 * Get the tool list for the requested context
