@@ -35,31 +35,31 @@ class AppController extends Controller {
 	
 	public function beforeFilter(Event $event) {
 		$this->dynamic = FALSE;
-		debug($this->_dynamicActions);
-		debug("{$this->request->controller}.{$this->request->action}");
+//		debug($this->_dynamicActions);
+//		debug("{$this->request->controller}.{$this->request->action}");
 		
 		if ($this->_dynamicActions === TRUE || in_array("{$this->request->controller}.{$this->request->action}", $this->_dynamicActions)) {
-			debug('this one is connected');
+//			debug('this one is connected');
 //			debug($this->_CrudData->load($this->request->controller)->strategy());
 			if (!isset($this->_CrudData) || 
 					!$this->_CrudData->has($this->request->controller) && 
 					$this->_CrudData->load($this->request->controller)->strategy() !== $this->request->action) 
 				{
-				debug('and it needs setup');
+//				debug('and it needs setup');
 				if (in_array($this->request->action, $this->_crudActions)) {
 					$method = 'config' . ucfirst($this->request->action);
 					$this->$method($this->request->controller);
-					debug('standard');
+//					debug('standard');
 				} else {
 					$method = $this->request->action;
 					// need an exception check here
 					$this->$method();
-					debug('custom');
+//					debug('custom');
 				}
 //				die;
 			} else {
-				debug('but it doesn\'t need setup');
-				debug($this->_CrudData->load($this->request->controller));
+//				debug('but it doesn\'t need setup');
+//				debug($this->_CrudData->load($this->request->controller));
 			}
 			$this->dynamic = TRUE;
 		}
