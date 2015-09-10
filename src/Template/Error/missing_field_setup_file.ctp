@@ -27,40 +27,31 @@ if (!empty($prefix)) {
     $prefixPath = $prefix . DS;
 }
 
-if (!empty($plugin)) {
-    $namespace = str_replace('/', '\\', $plugin);
-}
-if (empty($plugin)) {
-    $path = APP_DIR . DS . 'Controller' . DS . $prefixPath . h($class) . 'Controller.php' ;
-} else {
-    $path = Plugin::classPath($plugin) . 'Controller' . DS . $prefixPath . h($class) . 'Controller.php';
-}
-
 $this->layout = 'dev_error';
 
-$this->assign('title', 'Missing Controller');
-$this->assign('templateName', 'missing_controller.ctp');
+$this->assign('title', 'Missing FieldSetups File');
+$this->assign('templateName', 'missing_field_setups_file.ctp');
 
 $this->start('subheading');
 ?>
 <strong>Error: </strong>
-<em><?= h($pluginDot . $class) ?>Controller</em> could not be found.
+<em>FieldSetups</em> could not be found.
 <?php $this->end() ?>
 
 <?php $this->start('file') ?>
 <p class="error">
     <strong>Error: </strong>
-    Create the class <em><?= h($class) ?>Controller</em> below in file: <?= h($path) ?>
+    Create the class <em>FieldSetups</em> below in file: src/View/CrudViewResources/FieldSetups.php
 </p>
 
 <?php
 $code = <<<PHP
 <?php
-namespace {$namespace}\Controller{$prefixNs};
+namespace App\View\Helper\CrudViewResources;
 
-use {$namespace}\Controller\AppController;
+use CrudViews\View\Helper\CRUD\Decorator;
 
-class {$class}Controller extends AppController
+class FieldSetups
 {
 
 }
