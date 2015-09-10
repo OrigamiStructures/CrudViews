@@ -112,9 +112,11 @@ class CrudHelper extends Helper
     }
     
     protected function loadFieldSetups() {
-        $path = env('DOCUMENT_ROOT') . DS. 'src' . DS . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'FieldSetups.php';
-        if(!$handle = fopen($path, 'r')){
-            throw new MissingFieldSetupFileException('The field setup file is missing');
+        $handle = fopen(
+				env('DOCUMENT_ROOT') . DS. 'src' . DS . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'FieldSetups.php',
+				'r');
+        if(!$handle){
+            throw new MissingFieldSetupFileException(['fSetup' => 'FieldSetup File', 'another' => 'thing', 'plugin' => 'CrudViews']);
         } else {
             fclose($handle);
             $this->FieldSetups = new FieldSetups($this);
