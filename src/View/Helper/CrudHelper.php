@@ -97,20 +97,10 @@ class CrudHelper extends Helper
 		foreach ($config['actions'] as $name => $pattern) {
 			$this->{$name} = $pattern;
 		}   
-        try {
-            $this->loadFieldSetups();
-        } catch (Exception $exc) {
-            echo $exc->getMessage();
-            DIE;
-//            throw new Exception('didn\'t setup');
-        }
-
-
-        debug($this->FieldSetups);
-        die;
 		$this->useCrudData($this->_defaultAlias->name);
     }
     
+	
     protected function loadFieldSetups() {
         $handle = fopen(
 				env('DOCUMENT_ROOT') . DS. 'src' . DS . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'FieldSetups.php',
@@ -374,6 +364,9 @@ class CrudHelper extends Helper
 
 			// your custom setups or the default result if your's isn't found
 			default:
+				if (!isset($this->FieldSetups)) {
+					$this->loadFieldSetups();
+				}
 				if (method_exists($this->FieldSetups, $action)) {
 					return $this->FieldSetups->$action($this);
 				} else {
