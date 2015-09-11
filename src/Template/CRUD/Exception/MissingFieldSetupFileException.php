@@ -24,7 +24,7 @@ class MissingFieldSetupFileException extends Exception
     /**
      * {@inheritDoc}
      */
-    protected $_messageTemplate = 'Action %s::%s() could not be found, or is not accessible.';
+    protected $_messageTemplate = 'FieldSetups could not be found, or is not accessible.';
 
     /**
      * {@inheritDoc}

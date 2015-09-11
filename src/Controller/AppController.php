@@ -162,6 +162,7 @@ class AppController extends Controller {
 	 */
     public function render($view = null, $layout = null) {
 		if ($this->dynamic && in_array($this->request->action, $this->_crudActions)) {
+			debug('dynamic');
 			// This needs a place to put user created dynamic views?
 			$view = is_null($view) ? "CrudViews.CRUD/{$this->request->action}" : $view;
 			$layout = is_null($layout) ? 'default' : $layout;
@@ -171,6 +172,7 @@ class AppController extends Controller {
 			// needs review and discussion
 			return parent::render($view, $layout);
 		} else {
+			debug('static');
 			parent::render($view, $layout);
 		}
 		return $this->response;

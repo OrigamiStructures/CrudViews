@@ -17,8 +17,8 @@ class ExceptionRenderer extends BaseExceptionRenderer{
 	 * @var array
 	 */
 	protected $_exceptions = [
-		'missingFieldSetupFile', 'missingFieldSetupException', 
-		'missingActionConfigException', 'missingConfigFileException'
+		'missingFieldSetupFile', 'missingFieldSetup', 
+		'missingActionConfig', 'missingConfigFile'
 	];
 
 	/**
@@ -31,7 +31,6 @@ class ExceptionRenderer extends BaseExceptionRenderer{
 	 */
 	protected function _template(Exception $exception, $method, $code)
     {
-		debug('template');
 		parent::_template($exception, $method, $code);
 		if (in_array($this->template, $this->_exceptions)) {
 			$this->template = 'CrudViews.' . $this->template;

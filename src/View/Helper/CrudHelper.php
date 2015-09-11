@@ -103,14 +103,11 @@ class CrudHelper extends Helper
     
 	
     protected function loadFieldSetups() {
-		debug('fopen');
         $handle = fopen(
 				env('DOCUMENT_ROOT') . DS. 'src' . DS . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'FieldSetups.php',
 				'r');
         if(!$handle){
-			debug('throw');
-            throw new MissingFieldSetupFileException(['fSetup' => 'FieldSetup File', 'another' => 'thing', 'plugin' => 'CrudViews']);
-			debug('done throwing');
+            throw new MissingFieldSetupFileException(['fSetup' => 'FieldSetup File']);
         } else {
             fclose($handle);
             return $this->FieldSetups = new FieldSetups($this);
@@ -372,11 +369,9 @@ class CrudHelper extends Helper
 					$this->loadFieldSetups();
 				}
 				if (method_exists($this->FieldSetups, $action)) {
-					debug('method');
 					return $this->FieldSetups->$action($this);
 				} else {
-					debug('exception');
-					throw new MissingFieldSetupException(['action' => $action, 'more' => 'more']);
+					throw new MissingFieldSetupException(['action' => $action]);
 				}
 //				if (method_exists($this->FieldSetups, $action)) {
 //					return $this->FieldSetups->$action($this);
