@@ -215,9 +215,19 @@ use InstanceConfigTrait;
 //		$this->_associationFilter = $this->_filteredAssociations();
 	}
 
+	/**
+	 * Set values in the whitelist
+	 * 
+	 *	$this->whitelist(['title, article'], TRUE) will overwrite old values
+	 *	$this->whitelist(['title, article']) wil merge the values
+	 * 
+	 * @param array $allow
+	 * @param boolean $replace
+	 * @return array
+	 */
 	public function whitelist(array $allow = [], $replace = FALSE) {
 		if ($replace) {
-			$this->_whitelist = [];
+			$this->_whitelist = $allow;
 		}
 		if (!empty($allow) || $replace) {
 			$this->_whitelist = array_merge($this->_whitelist, (array) $allow);
@@ -226,9 +236,19 @@ use InstanceConfigTrait;
 		return $this->_whitelist;
 	}
 
+	/**
+	 * Set values in the blacklist
+	 * 
+	 *	$this->blacklist(['id, password'], TRUE) will overwrite old values
+	 *	$this->blacklist(['id, password']) wil merge the values
+	 * 
+	 * @param array $deny
+	 * @param boolean $replace
+	 * @return array
+	 */
 	public function blacklist($deny = [], $replace = FALSE) {
 		if ($replace) {
-			$this->_blacklist = [];
+			$this->_blacklist = (array) $deny;
 		}
 		if (!empty($deny) || $replace) {
 			$this->_blacklist = array_merge($this->_blacklist, (array) $deny);
@@ -297,6 +317,11 @@ use InstanceConfigTrait;
 		return $this->_associations;
 	}
 
+	/**
+	 * 
+	 * @param type $column
+	 * @return type
+	 */
 	public function columns($column = NULL) {
 		$value = NULL;
 		if (is_null($column)) {
@@ -402,7 +427,7 @@ use InstanceConfigTrait;
 	 * If there is a whitelist, include only these fields. 
 	 * If there is no whitelist, but there is a blacklist, exclude these fields
 	 * type_override allows forcing a column to a specific type. This will something 
-	 * like having an image_name field (normally a text field) return as a file field type 
+	 * like having an image_name field (normally a text field) return as a `file` field type 
 	 * so the proper inputs/outputs can be generated.
 	 * 
 	 * @return array 
@@ -414,14 +439,8 @@ use InstanceConfigTrait;
 			$schema = $this->_table->schema();
 			$columns = $schema->columns();
 			foreach ($columns as $name) {
-				if ($this->_whitelist) {
-					if (!in_array($name, $this->_whitelist)) {
-						continue;
-					}
-				} elseif ($this->_blacklist) {
-					if (in_array($name, $this->_blacklist)) {
-						continue;
-					}
+				if ($this->filterColumn($name)) {
+					continue;
 				}
 				if (in_array($name, $foreign_keys)) {
 					$this->_columns[$name] = ['foreign_key' => TRUE];
@@ -432,6 +451,23 @@ use InstanceConfigTrait;
 		}
 //		debug($this->_columns);
 		return $this->_columns;
+	}
+	
+	/**
+	 * Does the whitelist or blacklist filter this column out
+	 * 
+	 * @param string $name column name
+	 * @return boolean 
+	 */
+	public function filterColumn($name) {
+		if ($this->_whitelist) {
+			if (!in_array($name, $this->_whitelist)) {
+				return TRUE;
+			}
+		} elseif ($this->blacklist($name)) {
+			return TRUE;
+		}
+		return FALSE;
 	}
 
 	/**
