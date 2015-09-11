@@ -13,6 +13,7 @@ use CrudViews\View\Helper\CRUD\Decorator\BelongsToDecorator;
 use CrudViews\View\Helper\CRUD\CrudFields;
 use CrudViews\View\Helper\CRUD\Decorator\LabelDecorator;
 use CrudViews\Template\CRUD\Exception\MissingFieldSetupFileException;
+use \CrudViews\Template\CRUD\Exception\MissingFieldSetupException;
 use Cake\Core\Exception\Exception;
 
 //Here's the location of your custom FieldSetups
@@ -102,14 +103,17 @@ class CrudHelper extends Helper
     
 	
     protected function loadFieldSetups() {
+		debug('fopen');
         $handle = fopen(
 				env('DOCUMENT_ROOT') . DS. 'src' . DS . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'FieldSetups.php',
 				'r');
         if(!$handle){
+			debug('throw');
             throw new MissingFieldSetupFileException(['fSetup' => 'FieldSetup File', 'another' => 'thing', 'plugin' => 'CrudViews']);
+			debug('done throwing');
         } else {
             fclose($handle);
-            $this->FieldSetups = new FieldSetups($this);
+            return $this->FieldSetups = new FieldSetups($this);
         }
     }
 	
@@ -342,6 +346,8 @@ class CrudHelper extends Helper
 			$action = $this->CrudData->overrideAction($action);
 		}
 		
+		debug($action);
+		
 		switch ($action) {
 			// the four cake-standard crud setups
 			case 'index':
@@ -364,14 +370,23 @@ class CrudHelper extends Helper
 
 			// your custom setups or the default result if your's isn't found
 			default:
+				debug('default');
 				if (!isset($this->FieldSetups)) {
 					$this->loadFieldSetups();
+					debug('loaded');
 				}
 				if (method_exists($this->FieldSetups, $action)) {
+					debug('method');
 					return $this->FieldSetups->$action($this);
 				} else {
-					return new LabelDecorator(new CrudFields($this));
+					debug('exception');
+					throw new MissingFieldSetupException(['action' => $action]);
 				}
+//				if (method_exists($this->FieldSetups, $action)) {
+//					return $this->FieldSetups->$action($this);
+//				} else {
+//					return new LabelDecorator(new CrudFields($this));
+//				}
 		}
 	}
 	

@@ -1,69 +1,58 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @since         0.10.0
+ * @copyright     Copyright (c) Don Drake
+ * @link          http://OrigamiStructures.com
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 use Cake\Core\Plugin;
 use Cake\Core\Configure;
 use Cake\Utility\Inflector;
 
-$pluginDot = empty($plugin) ? null : $plugin . '.';
-$namespace = Configure::read('App.namespace');
-$prefixNs = '';
-$prefixPath = '';
-
-if (!empty($prefix)) {
-    $prefix = Inflector::camelize($prefix);
-    $prefixNs = '\\' . $prefix;
-    $prefixPath = $prefix . DS;
-}
-
-if (!empty($plugin)) {
-    $namespace = str_replace('/', '\\', $plugin);
-}
-if (empty($plugin)) {
-    $path = APP_DIR . DS . 'Controller' . DS . $prefixPath . h($class) . 'Controller.php' ;
-} else {
-    $path = Plugin::classPath($plugin) . 'Controller' . DS . $prefixPath . h($class) . 'Controller.php';
-}
+//$pluginDot = empty($plugin) ? null : $plugin . '.';
+//$namespace = Configure::read('App.namespace');
+//$prefixNs = '';
+//$prefixPath = '';
+//
+//if (!empty($prefix)) {
+//    $prefix = Inflector::camelize($prefix);
+//    $prefixNs = '\\' . $prefix;
+//    $prefixPath = $prefix . DS;
+//}
 
 $this->layout = 'dev_error';
 
-$this->assign('title', 'Missing Controller');
-$this->assign('templateName', 'missing_controller.ctp');
+$this->assign('title', 'Missing Method in FieldSetups');
+$this->assign(
+    'subheading',
+    sprintf('The action <em>%s</em> is not defined in <em>FieldSetups</em>', h($action))
+);
+$this->assign('templateName', 'missing_action.ctp');
 
-$this->start('subheading');
 ?>
-<strong>Error: </strong>
-<em><?= h($pluginDot . $class) ?>Controller</em> could not be found.
-<?php $this->end() ?>
 
 <?php $this->start('file') ?>
 <p class="error">
     <strong>Error: </strong>
-    Create the class <em><?= h($class) ?>Controller</em> below in file: <?= h($path) ?>
+    <?= sprintf('Create <em>FieldSetups::%s()</em> in file: src/View/CrudViewResources/FieldSetups.php.', h($action)); ?>
 </p>
 
 <?php
 $code = <<<PHP
 <?php
-namespace {$namespace}\Controller{$prefixNs};
+namespace App\View\Helper\CrudViewResources;
 
-use {$namespace}\Controller\AppController;
+use CrudViews\View\Helper\CRUD\Decorator;
 
-class {$class}Controller extends AppController
+class FieldSetups
 {
+    public function {$action}(\$helper)
+    {
+
+    }
 
 }
+<?php
 PHP;
 ?>
 <div class="code-dump"><?php highlight_string($code) ?></div>

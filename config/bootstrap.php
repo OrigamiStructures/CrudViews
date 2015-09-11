@@ -6,5 +6,5 @@
 
 use CrudViews\Error\CrudError;
 
-$errorHandler = new CrudError();
-$errorHandler->register();
+//$errorHandler = new CrudError();
+//$errorHandler->register();
