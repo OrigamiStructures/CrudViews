@@ -1,7 +1,7 @@
 <?php
 
 /*
- * CrudTableTrait provides data to support tailoring CRUD elements for thier Models
+ * CrudData provides data to support tailoring CRUD elements for thier Models
  * 
  * This trait provides simple arrays that aid with automating the use of Models.
  * It can also provide an object that provides basic information and logic about Model 
@@ -24,14 +24,13 @@ use CrudViews\Lib\NameConventions;
 use Bake\Utility\Model\AssociationFilter;
 
 /**
- * CakePHP CrudTableTrait
+ * CakePHP CrudData
  * @author dondrake
  */
 class CrudData {
 
 	use ConventionsTrait;
-
-use InstanceConfigTrait;
+	use InstanceConfigTrait;
 
 	/**
 	 * This is just for reference. 
@@ -181,6 +180,16 @@ use InstanceConfigTrait;
 //		debug($this->_foreignKeys());die;
 	}
 
+	/**
+	 * Find the primary key(s) set in the data table
+	 * 
+	 * SQL tables can have multiple keys. We have always had one. 
+	 * $as_array = False returns a single key as a string. 
+	 * = True will always return an array of keys. 
+	 * 
+	 * @param boolean $as_array
+	 * @return array
+	 */
 	public function primaryKey($as_array = FALSE) {
 		if ($as_array) {
 			return (array) $this->_table->primaryKey();
@@ -189,10 +198,24 @@ use InstanceConfigTrait;
 		}
 	}
 
+	/**
+	 * Find the displayField name
+	 * 
+	 * @return string
+	 */
 	public function displayField() {
 		return $this->_table->displayField();
 	}
 
+	/**
+	 * Get the alias of the Table this object describes
+	 * 
+	 * You can get a string or an inflection object with 
+	 * that can return many inflected version of the alias
+	 * 
+	 * @param string $type
+	 * @return NameConventions|string
+	 */
 	public function alias($type = 'object') {
 		if ($type === 'string') {
 			return $this->_table->alias();
@@ -201,6 +224,12 @@ use InstanceConfigTrait;
 		}
 	}
 
+	/**
+	 * Set or discover the current strategy
+	 * 
+	 * @param string $name
+	 * @return string
+	 */
 	public function strategy($name = NULL) {
 		if (!is_null($name)) {
 			$this->_strategy = $name;
@@ -208,6 +237,9 @@ use InstanceConfigTrait;
 		return $this->_strategy;
 	}
 
+	/**
+	 * Reestablish core properties for this object
+	 */
 	public function update() {
 		$this->AssociationCollection = $this->_associationCollection($this->_table);
 		$this->_foreignKeys = $this->_foreignKeys(TRUE);
@@ -257,9 +289,16 @@ use InstanceConfigTrait;
 		return $this->_blacklist;
 	}
 
+	/**
+	 * Set an override for a column
+	 * 
+	 * @param array $types
+	 * @param boolean $replace
+	 * @return array
+	 */
 	public function override($types = [], $replace = FALSE) {
 		if ($replace) {
-			$this->_override = [];
+			$this->_override = $types;
 		}
 		if (!empty($types) || $replace) {
 			$this->_override += $types;
@@ -268,9 +307,16 @@ use InstanceConfigTrait;
 		return $this->_override;
 	}
 
+	/**
+	 * Set attribute values
+	 * 
+	 * @param array $attributes
+	 * @param boolean $replace
+	 * @return array
+	 */
 	public function attributes($attributes = [], $replace = FALSE) {
 		if ($replace) {
-			$this->_attributes = [];
+			$this->_attributes = $attributes;
 		}
 		if (!empty($attributes) || $replace) {
 			$this->_attributes += $attributes;
@@ -309,18 +355,40 @@ use InstanceConfigTrait;
 		}
 	}
 
+	/**
+	 * Get current foreignKeys array
+	 * 
+	 * @return array
+	 */
 	public function foreignKeys() {
 		return $this->_foreignKeys;
 	}
 
+	/**
+	 * Get current associations array
+	 * 
+	 * @return array
+	 */
 	public function associations() {
 		return $this->_associations;
 	}
 
+	
 	/**
+	 * Get current filtered associations array
 	 * 
-	 * @param type $column
-	 * @return type
+	 * Not sure what's going on here
+	 * 
+	 * @return array
+	 */
+	public function filteredAssociations() {
+		return $this->_associationFilter;
+	}
+	/**
+	 * Get all or a single column entry
+	 * 
+	 * @param void|string $column
+	 * @return array
 	 */
 	public function columns($column = NULL) {
 		$value = NULL;
@@ -348,6 +416,12 @@ use InstanceConfigTrait;
 		return $this->_table->schema()->column($name);
 	}
 
+	/**
+	 * Find the type for a column
+	 * 
+	 * @param string $field
+	 * @return string
+	 */
 	public function columnType($field) {
 		if (isset($this->_columns[$field])) {
 			if (isset($this->_override[$field])) {
@@ -357,10 +431,6 @@ use InstanceConfigTrait;
 		} else {
 			return NULL;
 		}
-	}
-	
-	public function filteredAssociations() {
-		return $this->_associationFilter;
 	}
 
 //	public function entityName($name = NULL) {
@@ -484,6 +554,13 @@ use InstanceConfigTrait;
 		return $this->_associationFilter->filterAssociations($this->_table);
 	}
 
+	/**
+	 * Add an attribute the the array
+	 * 
+	 * @param string $key
+	 * @param string $value
+	 * @param boolean $merge
+	 */
 	public function addAttributes($key = null, $value = null, $merge = true) {
 		$this->_defaultConfig = $this->_columns[$key]['attributes'];
 		$this->_columns[$key]['attributes'] = $this->config($key, $value, $merge)->config()[$key];
