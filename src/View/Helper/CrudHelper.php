@@ -30,11 +30,11 @@ class CrudHelper extends Helper
 	public $AssociationActions;
 	public $RecordActions;
 
-	protected $_nativeModelActionDisplay = TRUE; 
-	
-	protected $_associatedModelWhitelist;
-	
-	protected $_associatedModelBlacklist;
+//	protected $_nativeModelActionDisplay = TRUE; 
+//	
+//	protected $_associatedModelWhitelist;
+//	
+//	protected $_associatedModelBlacklist;
 	
 	/**
 	 * The default (assumed) model alias (derived from the current controller)
@@ -419,9 +419,9 @@ class CrudHelper extends Helper
 			'_nativeModelActionPatterns', 
 			'_associatedModelActionPatterns',
 			'_recordActionPatterns',
-			'_nativeModelActionDisplay',
-			'_associatedModelWhitelist',
-			'_associatedModelBlacklist',
+//			'_nativeModelActionDisplay',
+//			'_associatedModelWhitelist',
+//			'_associatedModelBlacklist',
 			'_CrudData',
 			'CrudData'
 		];
