@@ -534,8 +534,10 @@ class CrudData {
 			if (!in_array($name, $this->_whitelist)) {
 				return TRUE;
 			}
-		} elseif ($this->blacklist($name)) {
-			return TRUE;
+		} elseif ($this->_blacklist) {
+			if (in_array($name, $this->_blacklist)) {
+				return TRUE;
+			}
 		}
 		return FALSE;
 	}
