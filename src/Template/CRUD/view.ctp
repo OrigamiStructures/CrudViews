@@ -119,8 +119,12 @@ foreach ($associated as $assoc) :
 
 <?php
 	if ($$entityName->{$assoc['property']}) :
+//		debug($entityName);
+//		debug($assoc);
 		// move the nested entity data for this association to its own variable
 		${$assoc['property']} = $$entityName->{$assoc['property']};
+//		debug(${$assoc['property']});
+//		debug($assoc['name']->modelName);
 		$this->set($assoc['property'], $$entityName->{$assoc['property']});
 		
 		// create the crud data element for this data
@@ -128,12 +132,13 @@ foreach ($associated as $assoc) :
 		// or called for through a method... possibly a view cell? (new feature)
 		// _CrudData was made public for this call. 
 		// we could also make a CrudHelper method to do this stuff
-		$this->Crud->configIndex($assoc['name']->modelName);
 		$this->Crud->useCrudData($assoc['name']->modelName);
+		$this->Crud->configIndex($assoc['name']->modelName);
+		debug($this->Crud->CrudData->alias());
 		
 		// and make the table view
 		// this is why we need to have an external method to do the setup
 		// there are no action or field setups in place doing things from here
-		echo $this->element('CrudViews.CRUD/crud_index_table');
+		echo $this->element('CrudViews.CRUD/crud_index_table', ['flag' => true]);
 	endif;
 endforeach;

@@ -1,3 +1,8 @@
+<?php
+if (isset($flag)) {
+	debug($this->Crud->CrudData->alias());//die;
+}
+?>
 <table cellpadding="0" cellspacing="0">
     <thead>
         <tr>
