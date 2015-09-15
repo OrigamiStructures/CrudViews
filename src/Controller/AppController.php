@@ -125,7 +125,7 @@ class AppController extends Controller {
 				$this->_dynamicActions[$action] = $action;
 			}
 		}
-		debug($this->_dynamicActions);
+//		debug($this->_dynamicActions);
 		return $this->_dynamicActions;
 	}
 
@@ -164,7 +164,7 @@ class AppController extends Controller {
 		if ($this->dynamic && in_array($this->request->action, $this->_crudActions)) {
 			// This needs a place to put user created dynamic views?
 			$view = is_null($view) ? "CrudViews.CRUD/{$this->request->action}" : $view;
-			$layout = is_null($layout) ? 'default' : $layout;
+			$layout = is_null($layout) ? $this->layout : $layout;
 			// This still might need to detect custom action hookups
 			// right now it only works for the standard views
 			// but I think this is actually all we will want it to do
