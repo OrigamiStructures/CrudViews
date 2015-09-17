@@ -170,7 +170,6 @@ class AppController extends Controller {
 			// right now it only works for the standard views
 			// but I think this is actually all we will want it to do
 			// needs review and discussion
-            debug($layout);
 			return parent::render($view, $layout);
 		} else {
 			parent::render($view, $layout);
