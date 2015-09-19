@@ -28,6 +28,11 @@ trait CrudConfig {
 	
 	protected $_RecordActions;
 	
+	/**
+	 * Default column blacklist.
+	 *
+	 * @var array
+	 */
 	protected $blacklist = ['created', 'modified', 'id'];
 	
 	protected $_defaultModelActionPatterns = [

@@ -99,7 +99,7 @@ class CrudData {
 	 *
 	 * @var array
 	 */
-	protected $_whitelist;
+	protected $_whitelist = [];
 
 	/**
 	 * fields to exclude from the columns list
@@ -108,7 +108,7 @@ class CrudData {
 	 *
 	 * @var array
 	 */
-	protected $_blacklist;
+	protected $_blacklist = [];
 	protected $_override;
 	protected $_attributes;
 	protected $_defaultConfig;
@@ -530,11 +530,11 @@ class CrudData {
 	 * @return boolean 
 	 */
 	public function filterColumn($name) {
-		if ($this->_whitelist) {
+		if (!empty($this->_whitelist)) {
 			if (!in_array($name, $this->_whitelist)) {
 				return TRUE;
 			}
-		} elseif ($this->_blacklist) {
+		} elseif (!empty($this->_blacklist)) {
 			if (in_array($name, $this->_blacklist)) {
 				return TRUE;
 			}
