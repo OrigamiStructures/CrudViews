@@ -179,6 +179,15 @@ class CrudData {
 //		debug($this->AssociationCollection);
 //		debug($this->_foreignKeys());die;
 	}
+	
+	/**
+	 * Return the table object
+	 * 
+	 * @return Table
+	 */
+	public function table() {
+		return $this->_table;
+	}
 
 	/**
 	 * Find the primary key(s) set in the data table
