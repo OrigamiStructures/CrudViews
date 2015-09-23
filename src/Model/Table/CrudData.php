@@ -337,7 +337,7 @@ class CrudData {
 	/**
 	 * Set and/or return override action
 	 * 
-	 * The action name will select a Field strategy in CrudHelper. And the 
+	 * The action name will select a named Decoration strategy in CrudHelper. And the 
 	 * four standard crud actions are hard-wired. This allows you to substitute 
 	 * a different strategy for one of the standards. Or, indeed, to substitute 
 	 * a strategy for one of your own views (though I'm not sure why you would).

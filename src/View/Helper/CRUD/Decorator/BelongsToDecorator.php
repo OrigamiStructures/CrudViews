@@ -67,6 +67,7 @@ class BelongsToDecorator extends FieldDecorator {
 								'' );
 			}			
 		}
+		debug(get_class($this->base));
 		return $this->base->output($field, $options);
 	}
 

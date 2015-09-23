@@ -64,7 +64,13 @@ class CrudFields implements FieldOutputInterface {
 		if (method_exists($this, $outputStrategy)) {
 			return $this->$outputStrategy($field, $options);
 		} else {
-			return $this->helper->FieldSetups->$outputStrategy($field, $options);
+			// ################################
+			// This needs an Exceptions
+			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			debug($outputStrategy);
+			debug(get_class($this->helper->ColumnTypeHeler));
+			debug(\Cake\Error\Debugger::trace());//die;
+			return $this->helper->ColumnTypeHeler->$outputStrategy($field, $options);
 		}
 	}
 	
