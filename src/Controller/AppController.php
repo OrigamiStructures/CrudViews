@@ -161,7 +161,8 @@ class AppController extends Controller {
 	 * @return string
 	 */
     public function render($view = null, $layout = null) {
-        $this->layout = (!$this->layout) ? 'default' : $this->layout;
+        $layout = (!$this->viewBuilder()->layout()) ? 'default' : $this->viewBuilder()->layout();
+		$this->viewBuilder()->layout($layout);
 		if ($this->dynamic && in_array($this->request->action, $this->_crudActions)) {
 			// This needs a place to put user created dynamic views?
 			$view = is_null($view) ? "CrudViews.CRUD/{$this->request->action}" : $view;
