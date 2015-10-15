@@ -15,11 +15,12 @@ use CrudViews\View\Helper\CRUD\Decorator\LabelDecorator;
 use CrudViews\Template\CRUD\Exception\MissingFieldSetupFileException;
 use \CrudViews\Template\CRUD\Exception\MissingFieldSetupException;
 use Cake\Core\Exception\Exception;
-use CrudViews\View\Helper\CRUD\Decorator\BasicDecorationSetups;
+use \App\Lib\dmDebug;
 use App\View\Helper\CrudViewResources\ColumnTypeHelper;
-
-//Here's the location of your custom DecorationSetups
 use App\View\Helper\CrudViewResources\DecorationSetups;
+
+//Here's the location of your custom FieldSetups
+use App\View\Helper\CrudViewResources\FieldSetups;
 
 class CrudHelper extends Helper
 {
@@ -62,22 +63,15 @@ class CrudHelper extends Helper
 	 *
 	 * @var CrudField
 	 */
-	public $DecorationStrategy;
+	public $Field;
 	
-	protected $_DecorationStrategies;
-
 	/**
-	 * The class that will contain decoration patterns for various controller/actions
-	 * 
-	 * The plugin's BaseDecorationSetups holds the decorations for base crud 
-	 * actions. The developer can extend that class with DecorationSetups to 
-	 * make new patterns for their own actions.
+	 * The class that will contain your customer output configurations
 	 *
 	 * @var object
 	 */
+	public $FieldSetups;
 	public $DecorationSetups;
-	
-	public $ColumnTypeHelper;
 
 	/**
 	 * The current entity
@@ -103,47 +97,24 @@ class CrudHelper extends Helper
 		$config += ['_CrudData' => [], 'actions' =>[]];
 		$this->_defaultAlias = new NameConventions(Inflector::pluralize(Inflector::classify($this->request->controller)));
 		$this->_CrudData = $config['_CrudData'];
-		$this->_DecorationStrategies = new Collection();
+		$this->_Field = new Collection();
 				
 		foreach ($config['actions'] as $name => $pattern) {
 			$this->{$name} = $pattern;
 		}   
 		$this->useCrudData($this->_defaultAlias->name);
-		$this->loadDecorationSetups();
-		$this->loadColumnTypeHelper();
-		debug(get_class($this->ColumnTypeHelper));//die;
-
     }
     
-	/**
-	 * Will load the user's setups if available, otherwise just the basics
-	 * 
-	 * These are the decorations to be used on every column of a Model 
-	 * in a particular controller/action. 
-	 * 
-	 * @return BasicDecorationSetups|DecorationSetups
-	 */
-    protected function loadDecorationSetups() {
+	
+    protected function loadFieldSetups() {
         $handle = fopen(
-				env('DOCUMENT_ROOT') . DS. 'src' . DS . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'DecorationSetups.php',
+				APP . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'DecorationSetups.php',
 				'r');
         if(!$handle){
-			return $this->DecorationSetups = new BasicDecorationSetups($this);
+            throw new MissingFieldSetupFileException(['fSetup' => 'FieldSetup File']);
         } else {
             fclose($handle);
             return $this->DecorationSetups = new DecorationSetups($this);
-        }
-    }
-	
-    protected function loadColumnTypeHelper() {
-        $handle = fopen(
-				env('DOCUMENT_ROOT') . DS. 'src' . DS . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'ColumnTypeHelper.php',
-				'r');
-        if(!$handle){
-			return $this->ColumnTypeHelper = new CrudFields($this);
-        } else {
-			debug('new');
-            return $this->ColumnTypeHelper = new ColumnTypeHelper($this);
         }
     }
 	
@@ -272,7 +243,7 @@ class CrudHelper extends Helper
 	}
 	
 	/**
-	 * Make the chosen CrudData and its matching DecorationStrategy object the current ones
+	 * Make the chosen CrudData and its matching Field object the current ones
 	 * 
 	 * @param string $alias
 	 * @return object CrudData object
@@ -283,16 +254,16 @@ class CrudHelper extends Helper
 		}
 		if ($this->_CrudData->has($alias)) {
 			$this->CrudData = $this->_CrudData->load($alias);
-			$this->DecorationStrategy = $this->decorateForAction($this->CrudData->strategy());
+			$this->Field = $this->createFieldHandler($this->CrudData->strategy());
 //			$this->useField($alias);
 			return $this->CrudData;
 		}
 	}
 	
 	/**
-	 * Establish the DecorationStrategy to use for output
+	 * Establish the Field to use for output
 	 * 
-	 * Make the chosen DecorationStrategy object the current one or 
+	 * Make the chosen Field object the current one or 
 	 * if the requested one doesn't exist, let the current 
 	 * one stand. There will always be one, so no worries.
 	 * 
@@ -300,7 +271,7 @@ class CrudHelper extends Helper
 	 */
 //	public function useField($alias) {
 //		if ($this->_Field->has($alias)) {
-//			$this->DecorationStrategy = $this->_Field->load($alias);
+//			$this->Field = $this->_Field->load($alias);
 //		}
 //	}
 	
@@ -313,7 +284,7 @@ class CrudHelper extends Helper
 	 * Also needs to have CrudData set to one of the _CrudData objects. But if it's not 
 	 * the object matching the current controller name will be used.
 	 * 
-	 * And needs a DecorationStrategy to be selected. But if it's not, the one associated 
+	 * And needs a Field strategy to be selected. But if it's not, the one associated 
 	 * with the current CrudData object will be used. Or a default.
 	 * 
 	 * @param string $field the field name/column name
@@ -323,9 +294,9 @@ class CrudHelper extends Helper
 		$dot = stristr($field, '.') ? explode('.', $field) : FALSE;
 		
 		// we can at least have a fallback output strategy
-		if (!$this->DecorationStrategy) {
-			$this->_DecorationStrategies->add($this->alias('string'), $this->decorateForAction($this->request->action));
-			$this->DecorationStrategy = $this->_DecorationStrategies->load($this->alias('string'));
+		if (!$this->Field) {
+			$this->_Field->add($this->alias('string'), $this->createFieldHandler($this->request->action));
+			$this->Field = $this->_Field->load($this->alias('string'));
 		}
 		if (!$dot && !isset($this->CrudData)) {
 			$this->useCrudData($this->alias('string'));
@@ -334,7 +305,7 @@ class CrudHelper extends Helper
 			$this->useCrudData($dot[0]);
 			// shouldn't this also check to see if there is a field output strategy for this $dot[0]?
 		}
-		return $this->DecorationStrategy->output($field, $this->columns()[$field]['attributes']);
+		return $this->Field->output($field, $this->columns()[$field]['attributes']);
 	}
 	
 	/**
@@ -362,13 +333,14 @@ class CrudHelper extends Helper
 	 * An 'image' extension for CrudField would render an image tag. The EditField extension 
 	 * would render a file type input. 
 	 * 
-	 * The cake-standard crud patterns are pre-defined. Methods can be added to the DecorationSetups 
+	 * The cake-standard crud patterns are pre-defined. Methods can be added to the FieldSetup 
 	 * class for custom set-ups and the name of the method can be passed in as $action. If the 
-	 * requested method isn't found an exception is thrown
+	 * requested method isn't found, LabelDecorator/CrudFields will be returned. It will 
+	 * output <p><span>Field Name: </span>field-value</p>
 	 * 
 	 * @param string $action name of the output construction process to use
 	 */
-	public function decorateForAction($action) {
+	public function createFieldHandler($action) {
 		
 		// Is actually override-strategy-for-fields-in-this-action
 		if ($this->CrudData->overrideAction($action)) {
@@ -381,30 +353,32 @@ class CrudHelper extends Helper
 //				debug('setup index decoration');
 				return new TableCellDecorator(
 					new BelongsToDecorator(
-						$this->ColumnTypeHelper
+						new CrudFields($this)
 					));
 				break;
 			case 'view':
 //				debug('setup view decoration');
 				return new BelongsToDecorator(
-						$this->ColumnTypeHelper
+						new CrudFields($this)
 					);
 				break;
 			case 'edit':
 			case 'add':
-				return $this->ColumnTypeHelper;
+				return new CrudFields($this);
 				break;
 
 			// your custom setups or the default result if your's isn't found
 			default:
-//				debug(get_class($this->DecorationSetups));die;
+				if (!isset($this->DecorationSetups)) {
+					$this->loadFieldSetups();
+				}
 				if (method_exists($this->DecorationSetups, $action)) {
 					return $this->DecorationSetups->$action($this);
 				} else {
 					throw new MissingFieldSetupException(['action' => $action]);
 				}
-//				if (method_exists($this->DecorationSetups, $action)) {
-//					return $this->DecorationSetups->$action($this);
+//				if (method_exists($this->FieldSetups, $action)) {
+//					return $this->FieldSetups->$action($this);
 //				} else {
 //					return new LabelDecorator(new CrudFields($this));
 //				}
