@@ -72,7 +72,8 @@ class CrudHelper extends Helper
 	 */
 	public $FieldSetups;
 	public $DecorationSetups;
-
+	public $ColumnTypeHelper;
+	
 	/**
 	 * The current entity
 	 *
@@ -106,7 +107,7 @@ class CrudHelper extends Helper
     }
     
 	
-    protected function loadFieldSetups() {
+    protected function loadDecorationSetups() {
         $handle = fopen(
 				APP . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'DecorationSetups.php',
 				'r');
@@ -115,6 +116,18 @@ class CrudHelper extends Helper
         } else {
             fclose($handle);
             return $this->DecorationSetups = new DecorationSetups($this);
+        }
+    }
+	
+    public function loadCustomSetups() {
+        $handle = fopen(
+				APP . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'ColumnTypeHelper.php',
+				'r');
+        if(!$handle){
+            throw new MissingFieldSetupFileException(['fSetup' => 'FieldSetup File']);
+        } else {
+            fclose($handle);
+            return $this->ColumnTypeHelper = new ColumnTypeHelper($this);
         }
     }
 	
@@ -370,7 +383,7 @@ class CrudHelper extends Helper
 			// your custom setups or the default result if your's isn't found
 			default:
 				if (!isset($this->DecorationSetups)) {
-					$this->loadFieldSetups();
+					$this->loadDecorationSetups();
 				}
 				if (method_exists($this->DecorationSetups, $action)) {
 					return $this->DecorationSetups->$action($this);

@@ -4,6 +4,8 @@ namespace CrudViews\View\Helper\CRUD;
 use CrudViews\View\Helper\CRUD\FieldOutputInterface;
 use Cake\I18n\Number;
 use CrudViews\View\Helper\CRUD\FieldSetups;
+use \App\Lib\dmDebug;
+
 /**
  * CrudFields base class to establish output for the possible field types
  * 
@@ -67,10 +69,10 @@ class CrudFields implements FieldOutputInterface {
 			// ################################
 			// This needs an Exceptions
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			debug($outputStrategy);
-			debug(get_class($this->helper->ColumnTypeHeler));
-			debug(\Cake\Error\Debugger::trace());//die;
-			return $this->helper->ColumnTypeHeler->$outputStrategy($field, $options);
+			if (!isset($this->helper->ColumnTypeHelper)) {
+				$this->helper->loadCustomSetups();
+			}
+			return $this->helper->ColumnTypeHelper->$outputStrategy($field, $options);
 		}
 	}
 	
