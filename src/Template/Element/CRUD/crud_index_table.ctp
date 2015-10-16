@@ -1,6 +1,6 @@
 <?php
-if (isset($flag)) {
-	debug($this->Crud->CrudData->alias());//die;
+if (isset($flag)) { 
+//	debug($this->Crud->CrudData->alias());//die;
 }
 ?>
 <table cellpadding="0" cellspacing="0">
