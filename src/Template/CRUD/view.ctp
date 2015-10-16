@@ -134,7 +134,7 @@ foreach ($associated as $assoc) :
 		// we could also make a CrudHelper method to do this stuff
 		$this->Crud->useCrudData($assoc['name']->modelName);
 		$this->Crud->configIndex($assoc['name']->modelName);
-		debug($this->Crud->CrudData->alias());
+//		debug($this->Crud->CrudData->alias());
 		
 		// and make the table view
 		// this is why we need to have an external method to do the setup

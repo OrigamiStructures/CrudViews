@@ -1,5 +1,6 @@
 <?php
 	$modelActions = $this->Crud->useActionPattern('model', 'Menus', $this->request->action);
+	$entity = isset(${$this->Crud->alias()->singularName}) ? ${$this->Crud->alias()->singularName} : NULL;
 ?>
 <ul class="side-nav">
 
@@ -7,7 +8,7 @@
 // Loop for the primary models actions 
 foreach ($modelActions->content as $tool) : 
 ?>
-	<li> <?= $this->Crud->ModelAction->output($modelActions, $tool, $this->Crud->alias()) ?> </li>
+	<li> <?= $this->Crud->ModelAction->output($modelActions, $tool, $this->Crud->alias(), $entity) ?> </li>
 <?php 
 endforeach;
 // done with the primary model
