@@ -19,7 +19,7 @@ use Cake\View\Helper;
  * @author dondrake
  */
 class ModelActionHelper extends Helper {
-	
+		
 	public $helpers = ['Html', 'Form'];
 
 	/**
@@ -33,10 +33,10 @@ class ModelActionHelper extends Helper {
 	 * @param object $name NameConvention
 	 * @return type
 	 */
-	public function output($tools, $tool, $name) {
+	public function output($tools, $tool, $name, $entity = NULL) {
 		// if there's a named action do it
 		if (method_exists($this, $tools->parse->action($tool))) {
-			return $this->{$tools->parse->action($tool)}($tools, $tool, $name);
+			return $this->{$tools->parse->action($tool)}($tools, $tool, $name, $entity);
 			
 		// otherwise do a link to controller = name, action = tool
 		} else {
@@ -60,11 +60,18 @@ class ModelActionHelper extends Helper {
 	 * @param object $name NameConvention
 	 * @return type
 	 */
-	public function delete($tools, $tool, $entity){
+	public function delete($tools, $tool, $name, $entity){
 		return $this->Form->postLink(
 				__($tools->parse->label($tool)), 
 				['action' => $tools->parse->action($tool), $entity->id], 
 				['confirm' => __('Are you sure you want to delete # {0}?', $entity->id)]);
+	}
+	
+	public function edit($tools, $tool, $name, $entity){
+		return $this->Html->link(
+				__($tools->parse->label($tool) . ' ' . $name->singularHumanName), 
+				['action' => $tools->parse->action($tool), $entity->id]
+			);
 	}
 	
 	/**
