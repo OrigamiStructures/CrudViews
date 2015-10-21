@@ -271,6 +271,7 @@ class CrudHelper extends Helper
 //			$this->useField($alias);
 			return $this->CrudData;
 		}
+		// need an exception here
 	}
 	
 	/**

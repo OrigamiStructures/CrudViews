@@ -17,6 +17,7 @@ use CrudViews\Lib\Collection;
  *				->parser = tools to return a label or action given a content node
  *			]
  *		]
+ * </pre>
  * So, on one of the three properties, the use should be able to specify the 
  * model by alias and the view by its action name and get back the object that 
  * has an array of tools for that context.

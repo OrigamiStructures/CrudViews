@@ -38,7 +38,8 @@ class AppController extends Controller {
 //		debug($this->_dynamicActions);
 //		debug("{$this->request->controller}.{$this->request->action}");
 		
-		if ($this->_dynamicActions === TRUE || in_array("{$this->request->controller}.{$this->request->action}", $this->_dynamicActions)) {
+		if ($this->_dynamicActions === TRUE || 
+				in_array("{$this->request->controller}.{$this->request->action}", $this->_dynamicActions)) {
 //			debug('this one is connected');
 //			debug($this->_CrudData->load($this->request->controller)->strategy());
 			if (!isset($this->_CrudData) || 
