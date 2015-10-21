@@ -33,7 +33,7 @@ use Cake\Utility\Inflector;
 				}
 			}
 		}
-		if (!empty($this->Crud->associations())) {
+		if (!empty($this->Crud->associations()) && $this->request->action != 'add') {
 			foreach ($this->Crud->associations() as $assoc) {
 				if (in_array($assoc['association_type'], ['oneToMany', 'manyToMany'])) {
 					echo $this->Form->input($assoc['property'] . '._ids', ['options' => ${$assoc['name']->variableName}]);
@@ -45,6 +45,7 @@ use Cake\Utility\Inflector;
 //            }
 //        }
 		}
+        
 		?>
 	</fieldset>
 	<?php
