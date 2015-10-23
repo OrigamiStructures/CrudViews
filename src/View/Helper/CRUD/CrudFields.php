@@ -77,19 +77,19 @@ class CrudFields implements FieldOutputInterface {
 	}
 	
 	protected function integer($field, $options = []) { 
-		return $this->Number->format($this->helper->entity->$field); 
+		return $this->Number->format($this->helper->entity->$field, $this->helper->CrudData->attributes($field, 'number')); 
 	}
 	
 	protected function biginteger($field, $options = []) {
-		return $this->Number->format($this->helper->entity->$field);
+		return $this->Number->format($this->helper->entity->$field, $this->helper->CrudData->attributes($field, 'number'));
 	}
 	
 	protected function decimal($field, $options = []) {
-		return $this->Number->format($this->helper->entity->$field);
+		return $this->Number->format($this->helper->entity->$field, $this->helper->CrudData->attributes($field, 'number'));
 	}
 	
 	protected function float($field, $options = []) {
-		return $this->Number->format($this->helper->entity->$field);
+		return $this->Number->format($this->helper->entity->$field, $this->helper->CrudData->attributes($field, 'number'));
 	}
 	
 	protected function date($field, $options = []) {
@@ -133,7 +133,7 @@ class CrudFields implements FieldOutputInterface {
 	}
 
 	protected function input($field, $options){
-		return $this->helper->Form->input($field, $options);
+		return $this->helper->Form->input($field, $this->helper->CrudData->attributes($field, 'input'));
 	}
 	
 }

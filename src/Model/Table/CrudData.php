@@ -22,6 +22,7 @@ use Cake\Core\InstanceConfigTrait;
 use Cake\ORM\Table;
 use CrudViews\Lib\NameConventions;
 use Bake\Utility\Model\AssociationFilter;
+use \Cake\Utility\Hash;
 
 /**
  * CakePHP CrudData
@@ -317,21 +318,31 @@ class CrudData {
 	}
 
 	/**
-	 * Set attribute values
+	 * Retrieve some attribute entries
+	 * 
+	 * Attributes are stored as additional arry nodes on the columns array. 
+	 * Each column in the entity is accessed by its name as the key and has 
+	 * a 'type' node as returned by the schema(). 
+	 * Attributes are also stored under thier column and are keyed by the name 
+	 * of the DOM element they will apply to as the various decorated levels 
+	 * of output are rendered.
+	 * 
+	 * This method can return any level of the array data.
 	 * 
 	 * @param array $attributes
 	 * @param boolean $replace
 	 * @return array
 	 */
-	public function attributes($attributes = [], $replace = FALSE) {
-		if ($replace) {
-			$this->_attributes = $attributes;
+	public function attributes($attributes = NULL) {
+		if (is_null($attributes)) {
+			return $this->columns();
 		}
-		if (!empty($attributes) || $replace) {
-			$this->_attributes += $attributes;
-			$this->update();
-		}
-		return $this->_attributes;
+		$steps = explode('.', $attributes);
+		$steps[0] .= '.attributes';
+		$result = Hash::extract($this->columns(), implode('.', $steps));
+		return $result;
+		return (count($result) === 1) ? $result[0] : $result;
+		
 	}
 
 	/**
@@ -568,6 +579,12 @@ class CrudData {
 	/**
 	 * Add an attribute the the array
 	 * 
+	 * Attributes are stored as additional arry nodes on the columns array. 
+	 * Each column in the entity is accessed by its name as the key and has 
+	 * a 'type' node as returned by the schema(). 
+	 * Attributes are keyed by the name of the DOM element they will apply 
+	 * to as the various decorated levels of output are rendered.
+	 * 
 	 * @param string $key
 	 * @param string $value
 	 * @param boolean $merge
@@ -575,7 +592,7 @@ class CrudData {
 	public function addAttributes($key = null, $value = null, $merge = true) {
 		$this->_defaultConfig = $this->_columns[$key]['attributes'];
 		$this->_columns[$key]['attributes'] = $this->config($key, $value, $merge)->config()[$key];
-//		$this->_columns[$key]['attributes'] += $value;
+//		debug($this->_columns);
 	}
 	
 	public function strategyIs($strategy) {

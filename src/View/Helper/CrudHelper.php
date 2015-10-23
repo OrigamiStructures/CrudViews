@@ -100,9 +100,25 @@ class CrudHelper extends Helper
 			$this->{$name} = $pattern;
 		}   
 		$this->useCrudData($this->_defaultAlias->name);
+//		debug($this->CrudData->attributes());
+//		$this->CrudData->addAttributes('name', ['link' =>
+//			['controller' => $this->request->controller,
+//			'action' => $this->request->action,
+//			'?' => $this->request->query,
+//			'#' => $this->request->hash]]);
+//		debug($this->CrudData->attributes());
+//		$this->CrudData->addAttributes('name', ['link' => ['?' => 'arg=12']]);
+//		debug($this->CrudData->attributes('name.div'));
     }
-    
 	
+	public function __call($method, $params) {
+		debug($params);
+		$this->CrudData->$method($params);
+	}
+
+
+
+
 //    protected function loadDecorationSetups() {
 //        $handle = fopen(
 //				APP . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'DecorationSetups.php',
@@ -337,6 +353,8 @@ class CrudHelper extends Helper
 		return $this->Renderer->output($column, $this->CrudData->columns()[$column]['attributes']);
 	}
 	
+	
+	
 	public function currentStrategy($strategy = false) {
 		if ($strategy) {
 			$this->currentStrategy = $strategy;
@@ -422,9 +440,9 @@ class CrudHelper extends Helper
 //		}
 //	}
 	
-	public function addAttributes($field, $attributes) {
-		$this->CrudData->addAttributes($field, $attributes);
-	}
+//	public function addAttributes($field, $attributes) {
+//		$this->CrudData->addAttributes($field, $attributes);
+//	}
 	
 	public function crudState($mode) {
 		switch ($mode) {
