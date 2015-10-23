@@ -28,7 +28,7 @@ class BasicDecorationSetups {
 
 	public function __construct($helper) {
 		$this->helper = $helper;
-		$this->product = $this->{$helper->currentStrategy}($helper);
+		$this->product = $this->{$helper->currentStrategy()}($helper);
 	}
 	
 	public function index($helper) {
