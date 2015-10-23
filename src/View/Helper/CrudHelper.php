@@ -40,6 +40,8 @@ class CrudHelper extends Helper
 	 */
 	protected $_defaultAlias;
 	
+	protected $currentStrategy;
+	
 	/**
 	 * The current crud data object
 	 *
@@ -335,7 +337,7 @@ class CrudHelper extends Helper
 		return $this->Renderer->output($column, $this->CrudData->columns()[$column]['attributes']);
 	}
 	
-	protected function currentStrategy($strategy = false) {
+	public function currentStrategy($strategy = false) {
 		if ($strategy) {
 			$this->currentStrategy = $strategy;
 		}
