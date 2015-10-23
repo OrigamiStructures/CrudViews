@@ -18,25 +18,25 @@ use Cake\Utility\Inflector;
 				$field = new NameConventions($field);
 				$fieldData = $this->Crud->column($field->name);
 				if (!empty($fieldData['null'])) {
-					echo $this->Form->input($field->name, ['options' => ${strtolower($field->modelName)}, 'empty' => 'Choose one']);
+					echo $this->Form->input($field->name, ['options' => ${strtolower($field->modelName)}, 'empty' => 'Choose one'], $this->Crud->CrudData->attributes("$field.input"));
 				} else {
-					echo $this->Form->input($field->name, ['options' => ${strtolower($field->modelName)}]);
+					echo $this->Form->input($field->name, ['options' => ${strtolower($field->modelName)}], $this->Crud->CrudData->attributes("$field.input"));
 				}
 				continue;
 			}
 			if (!in_array($field, ['created', 'modified', 'updated'])) {
 				$fieldData = $this->Crud->column($field);
 				if (($fieldData['type'] === 'date') && (!empty($fieldData['null']))) {
-					echo $this->Form->input($field, array('empty' => true, 'default' => ''));
+					echo $this->Form->input($field, $this->Crud->CrudData->attributes("$field.input") + array('empty' => true, 'default' => ''));
 				} else {
-					echo $this->Form->input($field);
+					echo $this->Form->input($field, $this->Crud->CrudData->attributes("$field.input"));
 				}
 			}
 		}
 		if (!empty($this->Crud->associations()) && $this->request->action != 'add') {
 			foreach ($this->Crud->associations() as $assoc) {
 				if (in_array($assoc['association_type'], ['oneToMany', 'manyToMany'])) {
-					echo $this->Form->input($assoc['property'] . '._ids', ['options' => ${$assoc['name']->variableName}]);
+					echo $this->Form->input($assoc['property'] . '._ids', ['options' => ${$assoc['name']->variableName}], $this->Crud->CrudData->attributes("$field.input"));
 				}
 			}
 //        if (!empty($associations['BelongsToMany'])) {
@@ -45,7 +45,6 @@ use Cake\Utility\Inflector;
 //            }
 //        }
 		}
-        
 		?>
 	</fieldset>
 	<?php
