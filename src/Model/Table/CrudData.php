@@ -577,5 +577,13 @@ class CrudData {
 		$this->_columns[$key]['attributes'] = $this->config($key, $value, $merge)->config()[$key];
 //		$this->_columns[$key]['attributes'] += $value;
 	}
+	
+	public function strategyIs($strategy) {
+		return $this->strategy() == $strategy;
+	}
+	
+	public function aliasIs($alias) {
+		return $this->_table->alias() == $alias;
+	}
 
 }

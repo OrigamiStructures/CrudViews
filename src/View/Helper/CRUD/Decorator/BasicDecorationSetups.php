@@ -28,6 +28,28 @@ class BasicDecorationSetups {
 
 	public function __construct($helper) {
 		$this->helper = $helper;
+		$this->product = $this->{$helper->currentStrategy}($helper);
 	}
 	
+	public function index($helper) {
+		return new TableCellDecorator(
+			new BelongsToDecorator(
+				new CrudFields($helper)
+		));
+	}
+	
+	public function view($helper) {
+		return new BelongsToDecorator(
+			new CrudFields($helper)
+		);
+	}
+	
+	public function edit($helper) {
+		return new CrudFields($this);
+	}
+	
+	public function add($helper) {
+		return new CrudFields($this);
+	}
+
 }

@@ -267,8 +267,15 @@ class CrudHelper extends Helper
 		}
 		if ($this->_CrudData->has($alias)) {
 			$this->CrudData = $this->_CrudData->load($alias);
-			$this->Field = $this->createFieldHandler($this->CrudData->strategy());
-//			$this->useField($alias);
+			$this->currentModel = $alias;
+			
+			$this->currentStrategy = $this->CrudData->strategy();
+			$this->Renderer = (new DecorationSetups($this))->product;
+			
+			// THIS IS BEING REFACTORED TO HAPPEN SEPARATELY
+			// BUT IS USED IN 6 PLACES
+//			$this->Field = $this->createFieldHandler($this->CrudData->strategy());
+
 			return $this->CrudData;
 		}
 		// need an exception here
@@ -304,24 +311,44 @@ class CrudHelper extends Helper
 	 * @param string $field the field name/column name
 	 * @return mixed probably a string
 	 */
-	public function output($field) {
-		$dot = stristr($field, '.') ? explode('.', $field) : FALSE;
-		
-		// we can at least have a fallback output strategy
-		if (!$this->Field) {
-			$this->_Field->add($this->alias('string'), $this->createFieldHandler($this->request->action));
-			$this->Field = $this->_Field->load($this->alias('string'));
+//	public function output($field) {
+//		$dot = stristr($field, '.') ? explode('.', $field) : FALSE;
+//		
+//		// we can at least have a fallback output strategy
+//		if (!$this->Field) {
+//			$this->_Field->add($this->alias('string'), $this->createFieldHandler($this->request->action));
+//			$this->Field = $this->_Field->load($this->alias('string'));
+//		}
+//		if (!$dot && !isset($this->CrudData)) {
+//			$this->useCrudData($this->alias('string'));
+//		} elseif ($dot) {
+//			$field = $dot[1];
+//			$this->useCrudData($dot[0]);
+//			// shouldn't this also check to see if there is a field output strategy for this $dot[0]?
+//		}
+//		return $this->Field->output($field, $this->columns()[$field]['attributes']);
+//	}
+	
+	public function output($column) {
+		list($model, $column) = stristr($column, '.') ? explode('.', $column) : [$this->request->controller, $column];
+		if (!$this->CrudData->aliasIs($this->currentModel)) {
+			$this->useCrudData($model);
 		}
-		if (!$dot && !isset($this->CrudData)) {
-			$this->useCrudData($this->alias('string'));
-		} elseif ($dot) {
-			$field = $dot[1];
-			$this->useCrudData($dot[0]);
-			// shouldn't this also check to see if there is a field output strategy for this $dot[0]?
+		if (!$this->currentStrategy($this->currentStrategy)) {
+			$this->Renderer = (new DecorationSetups($this))->product;
 		}
-		return $this->Field->output($field, $this->columns()[$field]['attributes']);
+//		dmDebug::ddd(get_class($this->Renderer), 'renderer class');die;
+		return $this->Renderer->output($column, $this->CrudData->columns()[$column]['attributes']);
 	}
 	
+	protected function currentStrategy($strategy = false) {
+		if ($strategy) {
+			$this->currentStrategy = $strategy;
+		}
+		return $this->currentStrategy;
+	}
+
+
 	/**
 	 * Put a field output strategy in place
 	 * 
@@ -354,50 +381,50 @@ class CrudHelper extends Helper
 	 * 
 	 * @param string $action name of the output construction process to use
 	 */
-	public function createFieldHandler($action) {
-		
-		// Is actually override-strategy-for-fields-in-this-action
-		if ($this->CrudData->overrideAction($action)) {
-			$action = $this->CrudData->overrideAction($action);
-		}
-				
-		switch ($action) {
-			// the four cake-standard crud setups
-			case 'index':
-//				debug('setup index decoration');
-				return new TableCellDecorator(
-					new BelongsToDecorator(
-						new CrudFields($this)
-					));
-				break;
-			case 'view':
-//				debug('setup view decoration');
-				return new BelongsToDecorator(
-						new CrudFields($this)
-					);
-				break;
-			case 'edit':
-			case 'add':
-				return new CrudFields($this);
-				break;
-
-			// your custom setups or the default result if your's isn't found
-			default:
-				if (!isset($this->DecorationSetups)) {
-					$this->loadDecorationSetups();
-				}
-				if (method_exists($this->DecorationSetups, $action)) {
-					return $this->DecorationSetups->$action($this);
-				} else {
-					throw new MissingFieldSetupException(['action' => $action]);
-				}
-//				if (method_exists($this->FieldSetups, $action)) {
-//					return $this->FieldSetups->$action($this);
-//				} else {
-//					return new LabelDecorator(new CrudFields($this));
+//	public function createFieldHandler($action) {
+//		
+//		// Is actually override-strategy-for-fields-in-this-action
+//		if ($this->CrudData->overrideAction($action)) {
+//			$action = $this->CrudData->overrideAction($action);
+//		}
+//				
+//		switch ($action) {
+//			// the four cake-standard crud setups
+//			case 'index':
+////				debug('setup index decoration');
+//				return new TableCellDecorator(
+//					new BelongsToDecorator(
+//						new CrudFields($this)
+//					));
+//				break;
+//			case 'view':
+////				debug('setup view decoration');
+//				return new BelongsToDecorator(
+//						new CrudFields($this)
+//					);
+//				break;
+//			case 'edit':
+//			case 'add':
+//				return new CrudFields($this);
+//				break;
+//
+//			// your custom setups or the default result if your's isn't found
+//			default:
+//				if (!isset($this->DecorationSetups)) {
+//					$this->loadDecorationSetups();
 //				}
-		}
-	}
+//				if (method_exists($this->DecorationSetups, $action)) {
+//					return $this->DecorationSetups->$action($this);
+//				} else {
+//					throw new MissingFieldSetupException(['action' => $action]);
+//				}
+////				if (method_exists($this->FieldSetups, $action)) {
+////					return $this->FieldSetups->$action($this);
+////				} else {
+////					return new LabelDecorator(new CrudFields($this));
+////				}
+//		}
+//	}
 	
 	public function addAttributes($field, $attributes) {
 		$this->CrudData->addAttributes($field, $attributes);
