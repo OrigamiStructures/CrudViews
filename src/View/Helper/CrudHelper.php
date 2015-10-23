@@ -33,12 +33,6 @@ class CrudHelper extends Helper
 	public $AssociationActions;
 	public $RecordActions;
 
-//	protected $_nativeModelActionDisplay = TRUE; 
-//	
-//	protected $_associatedModelWhitelist;
-//	
-//	protected $_associatedModelBlacklist;
-	
 	/**
 	 * The default (assumed) model alias (derived from the current controller)
 	 *
@@ -63,15 +57,15 @@ class CrudHelper extends Helper
 	 *
 	 * @var CrudField
 	 */
-	public $Field;
-	
-	/**
-	 * The class that will contain your customer output configurations
-	 *
-	 * @var object
-	 */
-	public $FieldSetups;
-	public $DecorationSetups;
+//	public $Field;
+//	
+//	/**
+//	 * The class that will contain your customer output configurations
+//	 *
+//	 * @var object
+//	 */
+//	public $FieldSetups;
+//	public $DecorationSetups;
 	public $ColumnTypeHelper;
 	
 	/**
@@ -98,7 +92,7 @@ class CrudHelper extends Helper
 		$config += ['_CrudData' => [], 'actions' =>[]];
 		$this->_defaultAlias = new NameConventions(Inflector::pluralize(Inflector::classify($this->request->controller)));
 		$this->_CrudData = $config['_CrudData'];
-		$this->_Field = new Collection();
+//		$this->_Field = new Collection();
 				
 		foreach ($config['actions'] as $name => $pattern) {
 			$this->{$name} = $pattern;
@@ -107,29 +101,29 @@ class CrudHelper extends Helper
     }
     
 	
-    protected function loadDecorationSetups() {
-        $handle = fopen(
-				APP . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'DecorationSetups.php',
-				'r');
-        if(!$handle){
-            throw new MissingFieldSetupFileException(['fSetup' => 'FieldSetup File']);
-        } else {
-            fclose($handle);
-            return $this->DecorationSetups = new DecorationSetups($this);
-        }
-    }
-	
-    public function loadCustomSetups() {
-        $handle = fopen(
-				APP . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'ColumnTypeHelper.php',
-				'r');
-        if(!$handle){
-            throw new MissingFieldSetupFileException(['fSetup' => 'FieldSetup File']);
-        } else {
-            fclose($handle);
-            return $this->ColumnTypeHelper = new ColumnTypeHelper($this);
-        }
-    }
+//    protected function loadDecorationSetups() {
+//        $handle = fopen(
+//				APP . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'DecorationSetups.php',
+//				'r');
+//        if(!$handle){
+//            throw new MissingFieldSetupFileException(['fSetup' => 'FieldSetup File']);
+//        } else {
+//            fclose($handle);
+//            return $this->DecorationSetups = new DecorationSetups($this);
+//        }
+//    }
+//	
+//    public function loadCustomSetups() {
+//        $handle = fopen(
+//				APP . 'View' . DS . 'Helper' . DS . 'CrudViewResources' . DS . 'ColumnTypeHelper.php',
+//				'r');
+//        if(!$handle){
+//            throw new MissingFieldSetupFileException(['fSetup' => 'FieldSetup File']);
+//        } else {
+//            fclose($handle);
+//            return $this->ColumnTypeHelper = new ColumnTypeHelper($this);
+//        }
+//    }
 	
 	/**
 	 * Get the tool list for the requested context
