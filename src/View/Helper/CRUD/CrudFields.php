@@ -42,11 +42,8 @@ class CrudFields implements FieldOutputInterface {
 	
 	protected $Text;
 
-	protected $Number;
-
 	public function __construct($helper) {
 		$this->helper = $helper;
-		$this->Number = new Number;
 //		if (get_class($config[0]) === 'CrudHelper' || is_subclass_of($config[0], 'CrudHelper')) {
 //			$this->_helper = $config[0];
 //		}
@@ -65,33 +62,22 @@ class CrudFields implements FieldOutputInterface {
 	public function output($field, $options = []) {
 		$outputStrategy = $this->helper->columnType($field);
 		return $this->$outputStrategy($field);
-//		if (method_exists($this, $outputStrategy)) {
-//			return $this->$outputStrategy($field, $options);
-//		} else {
-//			// ################################
-//			// This needs an Exceptions
-//			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//			if (!isset($this->helper->ColumnTypeHelper)) {
-//				$this->helper->loadCustomSetups();
-//			}
-//			return $this->helper->ColumnTypeHelper->$outputStrategy($field, $options);
-//		}
 	}
 	
 	protected function integer($field, $options = []) { 
-		return $this->Number->format($this->helper->entity->$field, $this->helper->CrudData->attributes($field, 'number')); 
+		return Number::format($this->helper->entity->$field, $this->helper->CrudData->attributes($field, 'number')); 
 	}
 	
 	protected function biginteger($field, $options = []) {
-		return $this->Number->format($this->helper->entity->$field, $this->helper->CrudData->attributes($field, 'number'));
+		return Number::format($this->helper->entity->$field, $this->helper->CrudData->attributes($field, 'number'));
 	}
 	
 	protected function decimal($field, $options = []) {
-		return $this->Number->format($this->helper->entity->$field, $this->helper->CrudData->attributes($field, 'number'));
+		return Number::format($this->helper->entity->$field, $this->helper->CrudData->attributes($field, 'number'));
 	}
 	
 	protected function float($field, $options = []) {
-		return $this->Number->format($this->helper->entity->$field, $this->helper->CrudData->attributes($field, 'number'));
+		return Number::format($this->helper->entity->$field, $this->helper->CrudData->attributes($field, 'number'));
 	}
 	
 	protected function date($field, $options = []) {
