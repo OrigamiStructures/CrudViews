@@ -132,8 +132,8 @@ foreach ($associated as $assoc) :
 		// or called for through a method... possibly a view cell? (new feature)
 		// _CrudData was made public for this call. 
 		// we could also make a CrudHelper method to do this stuff
-		$this->Crud->useCrudData($assoc['name']->modelName);
 		$this->Crud->configIndex($assoc['name']->modelName);
+		$this->Crud->useCrudData($assoc['name']->modelName);
 //		debug($this->Crud->CrudData->alias());
 		
 		// and make the table view
