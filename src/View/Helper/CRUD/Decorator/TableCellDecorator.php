@@ -11,8 +11,8 @@ use CrudViews\View\Helper\CRUD\Decorator\FieldDecorator;
 class TableCellDecorator extends FieldDecorator {
 	
 	public function output($field, $options = array()) {
-//		return $this->helper->Html->tag('td', $this->base->output($field, $options), $options);
-		return '<td>' . $this->base->output($field, $options) . '</td>';
+		return $this->helper->Html->tag('td', $this->base->output($field, $options), $this->helper->CrudData->attributes($field, 'td'));
+//		return '<td>' . $this->base->output($field, $options) . '</td>';
 	}
 
 }

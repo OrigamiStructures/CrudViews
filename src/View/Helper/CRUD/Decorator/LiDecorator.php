@@ -13,7 +13,7 @@ class LiDecorator extends FieldDecorator {
 	public function output($field, $options = array()) {
 		$tag = false;
 		if (isset($options['li'])) {
-			$tag = $this->helper->Html->tag('li', NULL, $options['li']);
+			$tag = $this->helper->Html->tag('li', NULL, $this->helper->CrudData->attributes("$field.li"));
 		}
 		return ($tag ? $tag : '<li>') . $this->base->output($field, $options);
 	}

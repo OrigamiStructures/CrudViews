@@ -19,17 +19,17 @@ namespace CrudViews\View\Helper\CRUD\Decorator;
 class BelongsToSelectDecorator extends BelongsToDecorator {
 	
 	public function output($field, $options = array()) {
-		$attributes = [
+		$this->helper->CrudData->addAttributes($field, ['input' => [
 				'empty' => 'choose one',
 				'label' => FALSE,
-				'value' => $this->helper->entity->$field
-			];
+//				'value' => $this->helper->entity->$field
+			]]);
 		if($this->hasUuid()) {
 //			debug($this->helper->entity);
 			$attributes['form'] = $this->helper->entity->_uuid->uuid('form');
 		}
 		if ($this->fieldIsKey($field, 'manyToOne')) {
-			return $this->helper->Form->input($field,$attributes);
+			return $this->helper->Form->input($field,$this->helper->CrudData->attributes("$field.input"));
 		}
 		return $this->base->output($field, $options);
 	}
