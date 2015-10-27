@@ -10,7 +10,6 @@ use CrudViews\Lib\NameConventions;
 use CrudViews\Lib\CrudConfig;
 use CrudViews\View\Helper\CRUD\Decorator\TableCellDecorator;
 use CrudViews\View\Helper\CRUD\Decorator\BelongsToDecorator;
-use CrudViews\View\Helper\CRUD\CrudFields;
 use CrudViews\View\Helper\CRUD\Decorator\LabelDecorator;
 use CrudViews\Template\CRUD\Exception\MissingFieldSetupFileException;
 use \CrudViews\Template\CRUD\Exception\MissingFieldSetupException;

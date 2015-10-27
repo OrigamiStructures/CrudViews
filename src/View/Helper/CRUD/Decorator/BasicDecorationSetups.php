@@ -3,7 +3,8 @@ namespace CrudViews\View\Helper\CRUD\Decorator;
 
 use CrudViews\View\Helper\CRUD\Decorator;
 use Cake\Utility\Text;
-use CrudViews\View\Helper\CRUD\CrudFields;
+//use CrudViews\View\Helper\CRUD\CrudFields;
+use App\View\Helper\CrudViewResources\ColumnTypeHelper;
 use CrudViews\View\Helper\CRUD\Decorator\TableCellDecorator;
 use CrudViews\View\Helper\CRUD\Decorator\BelongsToDecorator;
 use CrudViews\View\Helper\CRUD\Decorator\BelongsToSelectDecorator;
@@ -34,22 +35,22 @@ class BasicDecorationSetups {
 	public function index($helper) {
 		return new TableCellDecorator(
 			new BelongsToDecorator(
-				new CrudFields($helper)
+				new ColumnTypeHelper($helper)
 		));
 	}
 	
 	public function view($helper) {
 		return new BelongsToDecorator(
-			new CrudFields($helper)
+			new ColumnTypeHelper($helper)
 		);
 	}
 	
 	public function edit($helper) {
-		return new CrudFields($this);
+		return new ColumnTypeHelper($helper);
 	}
 	
 	public function add($helper) {
-		return new CrudFields($this);
+		return new ColumnTypeHelper($helper);
 	}
 
 }

@@ -5,6 +5,7 @@ use CrudViews\View\Helper\CRUD\FieldOutputInterface;
 use Cake\I18n\Number;
 use CrudViews\View\Helper\CRUD\FieldSetups;
 use \App\Lib\dmDebug;
+use App\View\Helper\CrudViewResources\ColumnTypeHelper;
 
 /**
  * CrudFields base class to establish output for the possible field types
@@ -63,17 +64,18 @@ class CrudFields implements FieldOutputInterface {
 	 */
 	public function output($field, $options = []) {
 		$outputStrategy = $this->helper->columnType($field);
-		if (method_exists($this, $outputStrategy)) {
-			return $this->$outputStrategy($field, $options);
-		} else {
-			// ################################
-			// This needs an Exceptions
-			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			if (!isset($this->helper->ColumnTypeHelper)) {
-				$this->helper->loadCustomSetups();
-			}
-			return $this->helper->ColumnTypeHelper->$outputStrategy($field, $options);
-		}
+		return $this->$outputStrategy($field);
+//		if (method_exists($this, $outputStrategy)) {
+//			return $this->$outputStrategy($field, $options);
+//		} else {
+//			// ################################
+//			// This needs an Exceptions
+//			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//			if (!isset($this->helper->ColumnTypeHelper)) {
+//				$this->helper->loadCustomSetups();
+//			}
+//			return $this->helper->ColumnTypeHelper->$outputStrategy($field, $options);
+//		}
 	}
 	
 	protected function integer($field, $options = []) { 
@@ -132,7 +134,7 @@ class CrudFields implements FieldOutputInterface {
 		return $this->helper->Text->autoParagraph(h($this->helper->entity->$field));
 	}
 
-	protected function input($field, $options){
+	protected function input($field, $options = []){
 		return $this->helper->Form->input($field, $this->helper->CrudData->attributes($field, 'input'));
 	}
 	

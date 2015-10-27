@@ -10,7 +10,7 @@ use ArrayObject;
 use CrudViews\Lib\ChildFilter;
 
 /**
- * ListHelper is a recursive list outputer that works inside the CrudFields decoration system
+ * ListHelper is a recursive list outputer that works inside the decoration system
  * 
  * This helper will send the field to CrudHelper's output method. It should be called through 
  * /Elements/Navigators/li_link.ctp or an equivalent.
