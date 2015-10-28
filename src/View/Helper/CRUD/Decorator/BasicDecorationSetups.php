@@ -32,6 +32,10 @@ class BasicDecorationSetups {
 		$this->product = $this->{$helper->currentStrategy()}($helper);
 	}
 	
+	public function make($strategy) {
+		return $this->$strategy($helper);
+	}
+	
 	public function index($helper) {
 		return new TableCellDecorator(
 			new BelongsToDecorator(

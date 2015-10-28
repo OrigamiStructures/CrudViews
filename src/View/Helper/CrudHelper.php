@@ -8,14 +8,10 @@ use CrudViews\Lib\Collection;
 use Cake\Utility\Inflector;
 use CrudViews\Lib\NameConventions;
 use CrudViews\Lib\CrudConfig;
-use CrudViews\View\Helper\CRUD\Decorator\TableCellDecorator;
-use CrudViews\View\Helper\CRUD\Decorator\BelongsToDecorator;
-use CrudViews\View\Helper\CRUD\Decorator\LabelDecorator;
 use CrudViews\Template\CRUD\Exception\MissingFieldSetupFileException;
 use \CrudViews\Template\CRUD\Exception\MissingFieldSetupException;
 use Cake\Core\Exception\Exception;
 use \App\Lib\dmDebug;
-use App\View\Helper\CrudViewResources\ColumnTypeHelper;
 use App\View\Helper\CrudViewResources\DecorationSetups;
 
 //Here's the location of your custom FieldSetups
@@ -50,6 +46,8 @@ class CrudHelper extends Helper
 	
 	public $ColumnTypeHelper;
 	
+	public $DecorationSetups;
+	
 	/**
 	 * The current entity
 	 *
@@ -74,6 +72,7 @@ class CrudHelper extends Helper
 		$config += ['_CrudData' => [], 'actions' =>[]];
 		$this->_defaultAlias = new NameConventions(Inflector::pluralize(Inflector::classify($this->request->controller)));
 		$this->_CrudData = $config['_CrudData'];
+		$this->DecorationSetups = new DecorationSetups($this);
 //		$this->_Field = new Collection();
 				
 		foreach ($config['actions'] as $name => $pattern) {
@@ -184,7 +183,7 @@ class CrudHelper extends Helper
 			$this->currentModel = $alias;
 			
 			$this->currentStrategy = $this->CrudData->strategy();
-			$this->Renderer = (new DecorationSetups($this))->product;
+			$this->Renderer = $this->DecorationSetups->make($this->currentStrategy);
 			
 			// THIS IS BEING REFACTORED TO HAPPEN SEPARATELY
 			// BUT IS USED IN 6 PLACES
