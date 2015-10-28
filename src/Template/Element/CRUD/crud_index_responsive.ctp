@@ -12,7 +12,7 @@
             <div class="row">
                 <?php
                     $this->Crud->strategy('responsivePaginatorHead');
-                    foreach ($this->Crud->columns() as $column_name => $column_specs) {
+                    foreach ($this->Crud->whitelist() as $column_name) {
                         echo $this->Crud->output($column_name);
                     }
                 ?>
