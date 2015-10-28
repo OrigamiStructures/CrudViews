@@ -7,7 +7,7 @@
     $actionCols = isset($actionCols) ? $actionCols : 'small-2';
 ?>
 <div class="activities index columns <?=$recordZoneCols?>">
-    <div class="row">
+    <div class="row labels">
         <div class="columns <?=$entityCols?>">
             <div class="row">
                 <?php
@@ -20,33 +20,39 @@
         </div>
         <div class="columns <?=$actionCols?>"><?= __('Actions') ?></div>
     </div>
+    <section class="records">
     <?php
         foreach (${$this->Crud->alias()->variableName} as $entity): 
             $this->Crud->entity = $entity;
     ?>
-        <section class="records">
-            <?php
-                $this->Crud->strategy('responsiveRecordRows');
-                foreach ($this->Crud->columns() as $field => $specs) :
-                    echo "\t\t\t\t" . $this->Crud->output($field) . "\n";
-                endforeach;
-            ?>
-            <div class="columns <?=$actionCols?>">
+        <div class="row">
+            <div class="columns <?=$entityCols?>">
+                <div class="row">
+                    <?php
+                        $this->Crud->strategy('responsiveRecordRows');
+                        foreach ($this->Crud->whitelist() as $field) :
+                            echo "\t\t\t\t" . $this->Crud->output($field) . "\n";
+                        endforeach;
+                    ?>
+                </div>
+            </div>
+            <div class="columns <?=$actionCols?> recordActions">
                 <?php
-                    $tools = $this->Crud->useActionPattern('record', $this->Crud->alias('string'), 'glphiconIndex');
+                    $tools = $this->Crud->useActionPattern('record', $this->Crud->alias('string'), 'index');
                     foreach ($tools->content as $tool) {
                         echo $this->Crud->RecordAction->output($tools, $tool, $entity) . '               ';
                     }
                 ?>
             </div>
-        </section>
+        </div>
     <?php endforeach; ?>
-    <div class="paginator">
+    </section>
+<!--    <div class="paginator">
         <ul class="pagination">
             <?= $this->Paginator->prev('< ' . __('previous')) ?>
             <?= $this->Paginator->numbers() ?>
             <?= $this->Paginator->next(__('next') . ' >') ?>
         </ul>
         <p><?= $this->Paginator->counter() ?></p>
-    </div>
+    </div>-->
 </div>
