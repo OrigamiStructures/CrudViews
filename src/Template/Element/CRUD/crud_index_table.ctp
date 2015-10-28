@@ -16,8 +16,9 @@ if (isset($flag)) {
     </thead>
     <tbody>
 		<?php
-		foreach (${$this->Crud->alias()->variableName} as $entity): $this->Crud->entity = $entity;
-			?>
+            foreach (${$this->Crud->alias()->variableName} as $entity): 
+                $this->Crud->entity = $entity;
+        ?>
 	        <tr class="record">
 				<?php
 				foreach ($this->Crud->columns() as $field => $specs) :

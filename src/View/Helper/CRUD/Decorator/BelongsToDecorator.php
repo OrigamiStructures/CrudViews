@@ -54,7 +54,6 @@ class BelongsToDecorator extends ColumnDecorator {
 				} else {
 					$output = $this->base->output($field, $options);
 				}
-
 				return ( $this->helper->entity->has($this->belongsTo['property']) ?
 								$this->helper->Html->link(
 										$output, //This should be a reference to the associate model's display

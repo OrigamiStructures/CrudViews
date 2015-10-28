@@ -10,6 +10,8 @@ use CrudViews\View\Helper\CRUD\Decorator\BelongsToDecorator;
 use CrudViews\View\Helper\CRUD\Decorator\BelongsToSelectDecorator;
 use CrudViews\View\Helper\CRUD\Decorator\LiDecorator;
 use CrudViews\View\Helper\CRUD\Decorator\LinkDecorator;
+use CrudViews\View\Helper\CRUD\Decorator\ResponsiveColumnDecorator;
+use CrudViews\View\Helper\CRUD\Decorator\ResponsiveHeadDecorator;
 
 /**
  * BasicDecorationFactory are the decoration patterns for basic crud views
@@ -55,5 +57,18 @@ class BasicDecorationFactory {
 	public function add($helper) {
 		return new ColumnOutput($helper);
 	}
+    
+    public function responsivePaginatorHead($helper) {
+        return new ResponsiveHeadDecorator(
+				new ColumnOutput($helper)
+		);
+    }
+    
+    public function responsiveRecordRows($helper) {
+		return new ResponsiveColumnDecorator(
+			new BelongsToDecorator(
+				new ColumnOutput($helper)
+		));
+    }
 
 }

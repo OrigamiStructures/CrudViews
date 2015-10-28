@@ -82,6 +82,18 @@ trait CrudConfig {
 		$this->configCrudData()->add($alias, $this->buildCrudData($alias, $options));
 		$this->configActionPatterns();
 	}
+    
+    public function configResponsivePaginatorHead($alias) {
+		$options = $this->vanillaOptions('responsivePaginatorHead');
+		$this->configCrudData()->add($alias, $this->buildCrudData($alias, $options));
+		$this->configActionPatterns();
+    }
+	
+    public function configResponsiveRecordRows($alias) {
+		$options = $this->vanillaOptions('responsiveRecordRows');
+		$this->configCrudData()->add($alias, $this->buildCrudData($alias, $options));
+		$this->configActionPatterns();
+    }
 	
 // <editor-fold defaultstate="collapsed" desc="Decomposed Methods">
 	

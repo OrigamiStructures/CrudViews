@@ -20,7 +20,7 @@ use App\View\Helper\CrudViewResources\FieldSetups;
 class CrudHelper extends Helper
 {
 	
-	public $helpers = ['Html', 'Form', 'Text', 'CrudViews.RecordAction', 'CrudViews.ModelAction'];
+	public $helpers = ['Html', 'Form', 'Text', 'CrudViews.RecordAction', 'CrudViews.ModelAction', 'Paginator'];
 	
 	use CrudConfig;
 
@@ -214,10 +214,10 @@ class CrudHelper extends Helper
 		if (!$this->CrudData->aliasIs($this->currentModel)) {
 			$this->useCrudData($model);
 		}
-		if (!$this->currentStrategy($this->currentStrategy)) {
+		if (!$this->CrudData->strategyIs($this->currentStrategy)) {
+            $this->currentStrategy = $this->CrudData->strategy();
 			$this->Renderer = $this->DecorationSetups->make($this->currentStrategy);
 		}
-//		dmDebug::ddd(get_class($this->Renderer), 'renderer class');die;
 		return $this->Renderer->output($column, $this->CrudData->columns()[$column]['attributes']);
 	}
 	
