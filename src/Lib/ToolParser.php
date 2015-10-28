@@ -32,7 +32,7 @@ class ToolParser {
 	 * Get the proper label for this tool entry
 	 * 
 	 * @param string $tool The value of the array node (not the key)
-	 * @param string $suffix Additional words for the label (typically the model alias
+	 * @param string $suffix Additional words for the label (typically the model alias)
 	 * @return string First word capitalized
 	 */
 	public function label($tool, $suffix = '') {
@@ -47,14 +47,15 @@ class ToolParser {
 	/**
 	 * Get the action that will be this tools action
 	 * 
+	 * [ tool-name => tool-name ]
+	 * 
 	 * @param string $tool The value of the array node (not the key)
 	 * @return string The action that will be the tool action
 	 */
 	public function action($tool) {
 		if (is_array($tool)) {
-			return $tool[array_keys($tool)[0]];
-		} else {
-			return $tool;
+			$tool = array_keys($tool)[0];
 		}
+		return $tool;
 	}
 }

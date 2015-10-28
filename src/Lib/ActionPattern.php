@@ -4,7 +4,7 @@ namespace CrudViews\Lib;
 use CrudViews\Lib\Collection;
 
 /**
- * ActionPattern - manage the deep Action Patterns that back up the Crud Veiw model and record tool generation
+ * ActionPattern - manage the Action Patterns that back up the Crud Veiw model and record tool generation
  * 
  * Model and Record tool sets are stored in multi-layered structures.
  * The finished object (which this class returns and managages) is stored 
@@ -15,12 +15,13 @@ use CrudViews\Lib\Collection;
  *			'view/name' => Object 
  *				->content = [array of actions and labels]
  *				->parser = tools to return a label or action given a content node
+ *				->keys = [array of ... ?]
  *			]
  *		]
  * </pre>
- * So, on one of the three properties, the use should be able to specify the 
- * model by alias and the view by its action name and get back the object that 
- * has an array of tools for that context.
+ * So, on one of the three properties, the developer should be able to specify 
+ * the model by alias and the view by its action name and get back the object 
+ * that has an array of tools for that context.
  * 
  * There are tools here to make new structures, add information to structures, 
  * replace sections with new information, and remove sections completely. 
@@ -37,6 +38,10 @@ use CrudViews\Lib\Collection;
  */
 class ActionPattern {
 	
+	/**
+	 *
+	 * @var CrudViews\Lib\Collection
+	 */
 	protected $group;
 	
 	private $alias_level;
@@ -146,6 +151,12 @@ class ActionPattern {
 		}
 	}
 
+	/**
+	 * 
+	 * @param type $path
+	 * @param type $data
+	 * @param type $replace
+	 */
 	public function add($path, $data = FALSE, $replace = FALSE) {
 		if (is_array($path)) {
 			$this->addModels($path, $data); // which are actually $data, $replace in this case
