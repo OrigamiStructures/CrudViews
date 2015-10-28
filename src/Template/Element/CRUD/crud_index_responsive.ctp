@@ -1,7 +1,4 @@
 <?php
-    $this->start('script');
-        echo $this->Html->script('timekeep');
-    $this->end();
     $recordZoneCols = isset($recordZoneCols) ? $recordZoneCols : 'large-10 medium-9';
     $entityCols = isset($entityCols) ? $entityCols : 'small-10';
     $actionCols = isset($actionCols) ? $actionCols : 'small-2';
