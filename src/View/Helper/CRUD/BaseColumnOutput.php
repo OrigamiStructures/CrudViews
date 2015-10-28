@@ -1,18 +1,18 @@
 <?php
 namespace CrudViews\View\Helper\CRUD;
 
-use CrudViews\View\Helper\CRUD\FieldOutputInterface;
+use CrudViews\View\Helper\CRUD\ColumnOutputInterface;
 use Cake\I18n\Number;
 use CrudViews\View\Helper\CRUD\FieldSetups;
 use \App\Lib\dmDebug;
-use App\View\Helper\CrudViewResources\ColumnTypeHelper;
+use App\View\Helper\CrudViewResources\ColumnOutput;
 
 /**
  * CrudFields base class to establish output for the possible field types
  * 
  * @author dondrake
  */
-class CrudFields implements FieldOutputInterface {
+class BaseColumnOutput implements ColumnOutputInterface {
 	
 	protected $column_types = [
 			'date', 

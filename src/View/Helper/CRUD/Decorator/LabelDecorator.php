@@ -1,7 +1,7 @@
 <?php
 namespace CrudViews\View\Helper\CRUD\Decorator;
 
-use CrudViews\View\Helper\CRUD\Decorator\FieldDecorator;
+use CrudViews\View\Helper\CRUD\Decorator\ColumnDecorator;
 use CrudViews\Lib\NameConventions;
 
 /**
@@ -9,7 +9,7 @@ use CrudViews\Lib\NameConventions;
  *
  * @author dondrake
  */
-class LabelDecorator extends FieldDecorator{
+class LabelDecorator extends ColumnDecorator{
 
 	public function output($field, $options = array()) {
 		

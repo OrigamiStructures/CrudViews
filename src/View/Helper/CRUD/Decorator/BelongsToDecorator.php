@@ -20,7 +20,7 @@ use CrudViews\Lib\NameConventions;
  *
  * @author dondrake
  */
-class BelongsToDecorator extends FieldDecorator {
+class BelongsToDecorator extends ColumnDecorator {
 	
 	protected $belongsTo = NULL;
 

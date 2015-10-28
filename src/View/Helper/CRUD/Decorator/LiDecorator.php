@@ -1,14 +1,14 @@
 <?php
 namespace CrudViews\View\Helper\CRUD\Decorator;
 
-use CrudViews\View\Helper\CRUD\Decorator\FieldDecorator;
+use CrudViews\View\Helper\CRUD\Decorator\ColumnDecorator;
 
 /**
  * Description of TableCellDecorator
  *
  * @author dondrake
  */
-class LiDecorator extends FieldDecorator {
+class LiDecorator extends ColumnDecorator {
 	
 	public function output($field, $options = array()) {
 		$tag = false;

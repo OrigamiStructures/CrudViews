@@ -215,7 +215,7 @@ class CrudHelper extends Helper
 			$this->useCrudData($model);
 		}
 		if (!$this->currentStrategy($this->currentStrategy)) {
-			$this->Renderer = (new DecorationSetups($this))->product;
+			$this->Renderer = $this->DecorationSetups->make($this->currentStrategy);
 		}
 //		dmDebug::ddd(get_class($this->Renderer), 'renderer class');die;
 		return $this->Renderer->output($column, $this->CrudData->columns()[$column]['attributes']);

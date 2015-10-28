@@ -1,14 +1,14 @@
 <?php
 namespace CrudViews\View\Helper\CRUD\Decorator;
 
-use CrudViews\View\Helper\CRUD\Decorator\FieldDecorator;
+use CrudViews\View\Helper\CRUD\Decorator\ColumnDecorator;
 
 /**
  * Description of TableCellDecorator
  *
  * @author dondrake
  */
-class TableCellDecorator extends FieldDecorator {
+class TableCellDecorator extends ColumnDecorator {
 	
 	public function output($field, $options = array()) {
 		return $this->helper->Html->tag('td', $this->base->output($field, $options), $this->helper->CrudData->attributes($field, 'td'));

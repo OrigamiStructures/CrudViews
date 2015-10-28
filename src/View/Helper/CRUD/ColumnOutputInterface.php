@@ -6,7 +6,7 @@ namespace CrudViews\View\Helper\CRUD;
  *
  * @author dondrake
  */
-interface FieldOutputInterface {
+interface ColumnOutputInterface {
 		
 	public function output($field, $options = []);
 

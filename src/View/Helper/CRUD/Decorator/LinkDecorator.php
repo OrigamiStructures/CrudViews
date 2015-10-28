@@ -2,14 +2,14 @@
 
 namespace CrudViews\View\Helper\CRUD\Decorator;
 
-use CrudViews\View\Helper\CRUD\Decorator\FieldDecorator;
+use CrudViews\View\Helper\CRUD\Decorator\ColumnDecorator;
 
 /**
  * Description of LinkDecorator
  *
  * @author dondrake
  */
-class LinkDecorator extends FieldDecorator {
+class LinkDecorator extends ColumnDecorator {
 
 	/**
 	 * Wrap some output in an <A> tag

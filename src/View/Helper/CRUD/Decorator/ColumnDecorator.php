@@ -1,6 +1,6 @@
 <?php
 namespace CrudViews\View\Helper\CRUD\Decorator;
-use CrudViews\View\Helper\CRUD\FieldOutputInterface;
+use CrudViews\View\Helper\CRUD\ColumnOutputInterface;
 /**
  * FieldDecorator is the base class for Decorators
  * 
@@ -9,7 +9,7 @@ use CrudViews\View\Helper\CRUD\FieldOutputInterface;
  *
  * @author dondrake
  */
-class FieldDecorator implements FieldOutputInterface {
+class ColumnDecorator implements ColumnOutputInterface {
 	
 	/**
 	 * The decorated object
@@ -35,9 +35,9 @@ class FieldDecorator implements FieldOutputInterface {
 	 * Decorated objects always carry a helper and that gets 
 	 * stored in $this->helper.
 	 * 
-	 * @param FieldOutputInterface $object
+	 * @param ColumnOutputInterface $object
 	 */
-	public function __construct(FieldOutputInterface $object) {
+	public function __construct(ColumnOutputInterface $object) {
 		$this->base = $object;
 		if (!$this->helper) {
 			$this->helper = $this->base->helper;
