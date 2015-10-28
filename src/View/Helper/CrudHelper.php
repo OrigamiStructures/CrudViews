@@ -12,7 +12,7 @@ use CrudViews\Template\CRUD\Exception\MissingFieldSetupFileException;
 use \CrudViews\Template\CRUD\Exception\MissingFieldSetupException;
 use Cake\Core\Exception\Exception;
 use \App\Lib\dmDebug;
-use App\View\Helper\CrudViewResources\DecorationSetups;
+use App\View\Helper\CrudViewResources\DecorationFactory;
 
 //Here's the location of your custom FieldSetups
 use App\View\Helper\CrudViewResources\FieldSetups;
@@ -72,7 +72,7 @@ class CrudHelper extends Helper
 		$config += ['_CrudData' => [], 'actions' =>[]];
 		$this->_defaultAlias = new NameConventions(Inflector::pluralize(Inflector::classify($this->request->controller)));
 		$this->_CrudData = $config['_CrudData'];
-		$this->DecorationSetups = new DecorationSetups($this);
+		$this->DecorationSetups = new DecorationFactory($this);
 //		$this->_Field = new Collection();
 				
 		foreach ($config['actions'] as $name => $pattern) {

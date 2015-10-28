@@ -12,7 +12,7 @@ use CrudViews\View\Helper\CRUD\Decorator\LiDecorator;
 use CrudViews\View\Helper\CRUD\Decorator\LinkDecorator;
 
 /**
- * BasicDecorationSetups are the decoration patterns for basic crud views
+ * BasicDecorationFactory are the decoration patterns for basic crud views
  * 
  * These are the decorator layers that will be applied to each column as it is 
  * output. The decorators may contain filter logic so they only operate on 
@@ -23,7 +23,7 @@ use CrudViews\View\Helper\CRUD\Decorator\LinkDecorator;
  *
  * @author dondrake
  */
-class BasicDecorationSetups {
+class BasicDecorationFactory {
 
 	protected $helper;
 
