@@ -171,10 +171,10 @@ class CrudData {
 		$this->_whitelist = (isset($options['whitelist'])) ? $options['whitelist'] : [];
 		$this->_override = (isset($options['override'])) ? $options['override'] : [];
 		$this->_overrideAction = (isset($options['overrideAction'])) ? $options['overrideAction'] : [];
-		$this->_attributes = (isset($options['attributes'])) ? $options['attributes'] : [];
+//		$this->_attributes = (isset($options['attributes'])) ? $options['attributes'] : [];
 		$this->_strategy = (isset($options['strategy'])) ? $options['strategy'] : 'index';
-
 		$this->_table = $table;
+		
 		$this->update();
 //		debug($this->_associationFilter);
 //		debug($this->AssociationCollection);
@@ -253,7 +253,7 @@ class CrudData {
 	public function update() {
 		$this->AssociationCollection = $this->_associationCollection($this->_table);
 		$this->_foreignKeys = $this->_foreignKeys(TRUE);
-		$this->_columns = $this->_columns(TRUE);
+//		$this->_columns = $this->_columns(TRUE);
 //		$this->_associationFilter = $this->_filteredAssociations();
 	}
 
@@ -261,7 +261,7 @@ class CrudData {
 	 * Set values in the whitelist
 	 * 
 	 *	$this->whitelist(['title, article'], TRUE) will overwrite old values
-	 *	$this->whitelist(['title, article']) wil merge the values
+	 *	$this->whitelist(['title, article']) will merge the values
 	 * 
 	 * @param array $allow
 	 * @param boolean $replace
@@ -294,7 +294,7 @@ class CrudData {
 		}
 		if (!empty($deny) || $replace) {
 			$this->_blacklist = array_merge($this->_blacklist, (array) $deny);
-			$this->update();
+//			$this->update();
 		}
 		return $this->_blacklist;
 	}
@@ -307,6 +307,7 @@ class CrudData {
 	 * @return array
 	 */
 	public function override($types = [], $replace = FALSE) {
+		debug($this->columns());
 		if ($replace) {
 			$this->_override = $types;
 		}
@@ -314,6 +315,7 @@ class CrudData {
 			$this->_override += $types;
 			$this->update();
 		}
+		debug($this->columns());
 		return $this->_override;
 	}
 
@@ -530,13 +532,17 @@ class CrudData {
 			$columns = $schema->columns();
 			foreach ($columns as $name) {
 				if ($this->filterColumn($name)) {
+//					debug('removing '.$name);
 					continue;
 				}
 				if (in_array($name, $foreign_keys)) {
+//					debug("foreign key $name");
 					$this->_columns[$name] = ['foreign_key' => TRUE];
 				}
 				$this->_columns[$name]['type'] = isset($this->type_override[$name]) ? $this->type_override[$name] : $schema->columnType($name);
+//				debug('override set for '.$name . '::'.isset($this->type_override[$name]));
 				$this->_columns[$name]['attributes'] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : [];
+//				debug('attribute set for '.$name . '::'.isset($this->_attrubutes[$name]));
 			}
 		}
 //		debug($this->_columns);

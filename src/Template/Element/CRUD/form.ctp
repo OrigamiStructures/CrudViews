@@ -12,7 +12,7 @@ use Cake\Utility\Inflector;
 		</legend>
 
 		<?php
-		foreach (array_keys($this->Crud->columns()) as $field) {
+		foreach ($this->Crud->whitelist() as $field) {
 			if (in_array($field, $this->Crud->primaryKey(TRUE))) {
 				continue;
 			}

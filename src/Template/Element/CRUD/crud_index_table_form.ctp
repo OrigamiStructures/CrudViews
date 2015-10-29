@@ -5,7 +5,7 @@ use CrudViews\Lib\Uuid;
 	<thead>
 		<tr>
 			<?php
-			foreach ($this->Crud->columns() as $column_name => $column_specs) {
+			foreach ($this->Crud->whitelist() as $column_name => $column_specs) {
 				echo '<th>' . $this->Paginator->sort($column_name) . '</th>';
 			}
 			?>
@@ -20,13 +20,13 @@ use CrudViews\Lib\Uuid;
 			$this->Crud->entity->_uuid = $uuid;
 			?>
 			<tr <?= $uuid->attr('id', 'row') ?> class="record">
-				<td colspan="<?= count($this->Crud->columns()) ?>">
+				<td colspan="<?= count($this->Crud->whitelist()) ?>">
 					<?= $this->Form->create($entity, ['id' => $uuid->uuid('form'), 'url' => ['action' => 'edit', $entity->id]]); ?>
 					<?= $entity->table_tag ? $entity->table_tag : '<table>' ?>
 		<tbody>
 			<tr>
 				<?php
-				foreach ($this->Crud->columns() as $field => $specs) :
+				foreach ($this->Crud->whitelist() as $field => $specs) :
 					echo "\t\t\t\t" . $this->Crud->output($field) . "\n";
 				endforeach;
 				?>

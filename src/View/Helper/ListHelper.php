@@ -87,7 +87,7 @@ class ListHelper extends Helper {
 		foreach ($level as $index => $value) {
 			$this->Crud->entity = $value;
 			// There is always only one entry in columns, the 'label' field for this list
-			foreach ($this->Crud->columns() as $column => $details) {
+			foreach ($this->Crud->whitelist() as $column => $details) {
 				
 				// The class will identify the level of the <LI> in the list heirarchy
 				$this->depth += 1; // open an li, consider it a deeper level

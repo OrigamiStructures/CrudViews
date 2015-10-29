@@ -14,7 +14,7 @@ $entityName = $this->Crud->alias()->singularName;
 $this->Crud->entity = $$entityName;
 
 // Group the fields by type for the standard view page
-foreach ($this->Crud->columns() as $field => $data) {
+foreach ($this->Crud->whitelist() as $field => $data) {
 	$type = $this->Crud->columnType($field);
 	if (isset($this->Crud->foreignKeys()[$type])) {
 		$this->start('string');

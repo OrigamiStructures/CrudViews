@@ -45,6 +45,9 @@ class ModelActionHelper extends Helper {
 			if (in_array($tools->parse->action($tool), ['new', 'add'])) {
 				$targetName = $name->singularHumanName;
 			}
+//			debug($tools->parse->action($tool));
+//			debug($tool);
+//			debug($tools);
 			return $this->Html->link(
 					__($tools->parse->label($tool, $targetName)), 
 					['controller' => $name, 'action' => $tools->parse->action($tool)]
