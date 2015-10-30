@@ -22,7 +22,7 @@ class LabelDecorator extends ColumnDecorator{
 			$this->Html->tag(
 				'span', 
 				$name->singularHumanName . ': ', 
-				$this->helper->CrudData->attributes($field, 'span')
+				$this->helper->CrudData->attributes("$field.span")
 			) . $this->base->output($field, $options),
 			$attributes);
 	}
