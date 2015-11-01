@@ -41,7 +41,10 @@
             </div>
             <div class="columns <?=$actionCols?> recordActions">
                 <?php
-					echo $this->Tk->timeFormActionButtons($entity->id, $entity->status);
+                    $tools = $this->Crud->useActionPattern('record', $this->Crud->alias('string'), 'index');
+                    foreach ($tools->content as $tool) {
+                        echo $this->Crud->RecordAction->output($tools, $tool, $entity) . '               ';
+                    }
                 ?>
             </div>
         </div>
