@@ -171,7 +171,7 @@ class CrudData {
 		$this->_whitelist = (isset($options['whitelist'])) ? $options['whitelist'] : [];
 		$this->_override = (isset($options['override'])) ? $options['override'] : [];
 		$this->_overrideAction = (isset($options['overrideAction'])) ? $options['overrideAction'] : [];
-//		$this->_attributes = (isset($options['attributes'])) ? $options['attributes'] : [];
+		$this->_attributes = (isset($options['attributes'])) ? $options['attributes'] : [];
 		$this->_strategy = (isset($options['strategy'])) ? $options['strategy'] : 'index';
 		$this->_table = $table;
 		
@@ -253,7 +253,7 @@ class CrudData {
 	public function update() {
 		$this->AssociationCollection = $this->_associationCollection($this->_table);
 		$this->_foreignKeys = $this->_foreignKeys(TRUE);
-//		$this->_columns = $this->_columns(TRUE);
+		$this->_columns = $this->_columns(TRUE);
 //		$this->_associationFilter = $this->_filteredAssociations();
 	}
 
@@ -307,7 +307,6 @@ class CrudData {
 	 * @return array
 	 */
 	public function override($types = [], $replace = FALSE) {
-		debug($this->columns());
 		if ($replace) {
 			$this->_override = $types;
 		}
@@ -315,7 +314,6 @@ class CrudData {
 			$this->_override += $types;
 			$this->update();
 		}
-		debug($this->columns());
 		return $this->_override;
 	}
 
