@@ -1,4 +1,10 @@
 <?php
+    $this->append('css');
+        echo $this->Html->css('glyphicon');
+    $this->end();
+	$this->append('script');
+		echo $this->Html->script('timekeep');
+	$this->end();
     $recordZoneCols = isset($recordZoneCols) ? $recordZoneCols : 'large-10 medium-9';
     $entityCols = isset($entityCols) ? $entityCols : 'small-10';
     $actionCols = isset($actionCols) ? $actionCols : 'small-2';
@@ -17,12 +23,12 @@
         </div>
         <div class="columns <?=$actionCols?>"><?= __('Actions') ?></div>
     </div>
-    <section class="records">
+    <section class="activities">
     <?php
         foreach (${$this->Crud->alias()->variableName} as $entity): 
             $this->Crud->entity = $entity;
     ?>
-        <div class="row">
+        <div id="row_<?=$entity->id?>" class="row">
             <div class="columns <?=$entityCols?>">
                 <div class="row">
                     <?php
@@ -35,10 +41,7 @@
             </div>
             <div class="columns <?=$actionCols?> recordActions">
                 <?php
-                    $tools = $this->Crud->useActionPattern('record', $this->Crud->alias('string'), 'index');
-                    foreach ($tools->content as $tool) {
-                        echo $this->Crud->RecordAction->output($tools, $tool, $entity) . '               ';
-                    }
+					echo $this->Tk->timeFormActionButtons($entity->id, $entity->status);
                 ?>
             </div>
         </div>
