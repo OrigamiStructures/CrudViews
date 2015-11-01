@@ -5,8 +5,8 @@ Copyright 2015 Origami Structures
     Created on : Oct 28, 2015, 2:06:42 PM
     Author     : jasont
 */
-section .row:nth-of-type(2n) {
-  background: #ebebeb; }
+/*section .row:nth-of-type(2n) {
+  background: #ebebeb; }*/
 
 div.recordActions, div.labels {
   font-size: 60%;
