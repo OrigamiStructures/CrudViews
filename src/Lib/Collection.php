@@ -69,7 +69,8 @@ class Collection {
 	 * @return boolean
 	 */
 	public function has($key) {
-		return in_array($key, $this->_keys);
+		return isset(array_flip($this->_keys)[$key]);
+//		return in_array($key, $this->_keys);
 	}
 	
 	/**
