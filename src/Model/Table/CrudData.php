@@ -176,6 +176,7 @@ class CrudData {
 		$this->_table = $table;
 		
 		$this->update();
+		$this->_columns = $this->_columns(TRUE);
 //		debug($this->_associationFilter);
 //		debug($this->AssociationCollection);
 //		debug($this->_foreignKeys());die;
@@ -253,7 +254,7 @@ class CrudData {
 	public function update() {
 		$this->AssociationCollection = $this->_associationCollection($this->_table);
 		$this->_foreignKeys = $this->_foreignKeys(TRUE);
-		$this->_columns = $this->_columns(TRUE);
+//		$this->_columns = $this->_columns(TRUE);
 //		$this->_associationFilter = $this->_filteredAssociations();
 	}
 
@@ -267,8 +268,8 @@ class CrudData {
 	 * @param boolean $replace
 	 * @return array
 	 */
-	public function whitelist($allow = false, $replace = FALSE) {
-		if ($allow) {
+	public function whitelist($allow = FALSE, $replace = FALSE) {
+		if ($allow !== FALSE) {
 			// array provided, so set whitelist
 			if ($replace) {
 				$this->_whitelist = $allow;
