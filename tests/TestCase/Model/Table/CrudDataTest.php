@@ -57,13 +57,22 @@ class CrudDataTest extends TestCase
     /**
      * @dataProvider whitelistProvider
      */
-    public function testWhitelist($whitelist, $blacklist, $replace, $expected) {
-//        debug(array_keys($this->CrudData->columns()));
-//        debug($this->CrudData->blacklist);
+    public function testWhitelistEmpty($whitelist, $blacklist, $replace, $expected) {
         $this->CrudData->blacklist($blacklist);
-        debug($this->CrudData->whitelist($whitelist, $replace));
         $this->assertEquals($this->CrudData->whitelist($whitelist, $replace), $expected);
     }
+    
+    /**
+     * @dataProvider whitelistProvider
+     */
+//    public function testWhitelistPopulated($whitelist, $blacklist, $replace, $expected) {
+////        debug(array_keys($this->CrudData->columns()));
+////        debug($this->CrudData->blacklist);
+//        $this->CrudData->blacklist($blacklist);
+//        $this->CrudData->whitelist('activity', 'status', 'task_id', TRUE);
+////        debug($this->CrudData->whitelist($whitelist, $replace));
+//        $this->assertEquals($this->CrudData->whitelist($whitelist, $replace), $expected);
+//    }
     
     /**
      * Build as:
@@ -88,17 +97,21 @@ class CrudDataTest extends TestCase
             'customer_billing_statusCopy'
         ];
         $return = [
-            //Test-1
+            //Test-0
             [
                 [], [], FALSE, $columnKeys
             ],
-            //Test-2
+            //Test-1
             [
                 [], [], TRUE, $columnKeys
             ],
-            //Test-3
+            //Test-2
             [
                 ['id', 'created', 'modified'], [], FALSE, ['id', 'created', 'modified']
+            ],
+            //Test-3
+            [
+                [], ['id'], FALSE, array_diff($columnKeys, ['id'])
             ]
         ];
         return $return;
