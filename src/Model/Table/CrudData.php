@@ -273,7 +273,7 @@ class CrudData {
 			if ($replace) {
 				$this->_whitelist = $allow;
 			} else {
-				$this->_whitelist = array_merge($this->_whitelist, (array) $allow);
+				$this->_whitelist = $this->_whitelist + (array) $allow;
 			}
 			$this->update();
 		}
@@ -281,7 +281,7 @@ class CrudData {
 		if (!empty($this->_whitelist)) {
 			$allowed = $this->_whitelist;
 		} elseif (!empty($this->_blacklist)) {
-			$allow = array_diff($this->columns(), $this->_blacklist);
+			$allowed = array_diff(array_keys($this->columns()), $this->_blacklist);
 		} else {
 			$allowed = array_keys($this->columns());
 		}
