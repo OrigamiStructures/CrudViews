@@ -1,6 +1,6 @@
 {
 "version": 3,
-"mappings": ";;;;;;;AASI,4BAAoB;EAChB,UAAU,EAAE,OAAO;;AAI3B,6BAA6B;EACzB,SAAS,EAAE,GAAG;EACd,WAAW,EAAE,IAAI;;AAGrB,UAAU;EACN,UAAU,EAAE,OAAO;EACnB,OAAO,EAAE,MAAM",
+"mappings": ";;;;;;;;;;;;AAcA,6BAA6B;EACzB,SAAS,EAAE,GAAG;EACd,WAAW,EAAE,IAAI;;AAGrB,UAAU;EACN,UAAU,EAAE,OAAO;EACnB,OAAO,EAAE,MAAM",
 "sources": ["../scss/crudBase.scss"],
 "names": [],
 "file": "crudBase.css"
