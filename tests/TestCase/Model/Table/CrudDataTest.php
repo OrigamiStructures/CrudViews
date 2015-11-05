@@ -222,7 +222,7 @@ class CrudDataTest extends TestCase
             ],
             //test6
             [
-                ['creation'],['id'],FALSE,['creation']
+                ['creation'],['id'],FALSE,['creation', 'id']
             ],
             //test7
             [
