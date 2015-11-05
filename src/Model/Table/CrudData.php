@@ -267,15 +267,25 @@ class CrudData {
 	 * @param boolean $replace
 	 * @return array
 	 */
-	public function whitelist(array $allow = [], $replace = FALSE) {
-		if ($replace) {
-			$this->_whitelist = $allow;
-		}
-		if (!empty($allow) || $replace) {
-			$this->_whitelist = array_merge($this->_whitelist, (array) $allow);
+	public function whitelist($allow = false, $replace = FALSE) {
+		if ($allow) {
+			// array provided, so set whitelist
+			if ($replace) {
+				$this->_whitelist = $allow;
+			} else {
+				$this->_whitelist = array_merge($this->_whitelist, (array) $allow);
+			}
 			$this->update();
 		}
-		return $this->_whitelist;
+		// in every case, return the allowed columns
+		if (!empty($this->_whitelist)) {
+			$allowed = $this->_whitelist;
+		} elseif (!empty($this->_blacklist)) {
+			$allow = array_diff($this->columns(), $this->_blacklist);
+		} else {
+			$allowed = array_keys($this->columns());
+		}
+		return $allowed;
 	}
 
 	/**
