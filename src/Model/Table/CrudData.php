@@ -274,7 +274,7 @@ class CrudData {
 			if ($replace) {
 				$this->_whitelist = $allow;
 			} else {
-				$this->_whitelist = $this->_whitelist + (array) $allow;
+                $this->_whitelist = array_keys(array_merge(array_flip($this->_whitelist), array_flip($allow)));
 			}
 			$this->update();
 		}
@@ -293,19 +293,20 @@ class CrudData {
 	 * Set values in the blacklist
 	 * 
 	 *	$this->blacklist(['id, password'], TRUE) will overwrite old values
-	 *	$this->blacklist(['id, password']) wil merge the values
+	 *	$this->blacklist(['id, password']) will merge the values
 	 * 
 	 * @param array $deny
 	 * @param boolean $replace
 	 * @return array
 	 */
 	public function blacklist($deny = [], $replace = FALSE) {
-		if ($replace) {
-			$this->_blacklist = (array) $deny;
-		}
-		if (!empty($deny) || $replace) {
-			$this->_blacklist = array_merge($this->_blacklist, (array) $deny);
-//			$this->update();
+		if ($deny !== FALSE) {
+			// array provided, so set blacklist
+			if ($replace) {
+				$this->_blacklist = $deny;
+			} else {
+                $this->_blacklist = array_keys(array_merge(array_flip($this->_blacklist), array_flip($deny)));
+			}
 		}
 		return $this->_blacklist;
 	}

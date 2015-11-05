@@ -55,20 +55,13 @@ class CrudDataTest extends TestCase
     }
     
     /**
+     * Test the whitelist function with an empty whitelist
+     * 
      * @dataProvider whitelistProvider
      */
     public function testWhitelistEmpty($whitelist, $blacklist, $replace, $expected) {
         $this->CrudData->blacklist($blacklist);
-        $this->assertEquals($this->CrudData->whitelist($whitelist, $replace), $expected);
-    }
-    
-    /**
-     * @dataProvider whitelistProviderPopulated
-     */
-    public function testWhitelistPopulated($whitelist, $blacklist, $replace, $expected) {
-        $this->CrudData->blacklist($blacklist);
-        $this->CrudData->whitelist(['activity', 'status', 'task_id'], TRUE);
-        $this->assertEquals($this->CrudData->whitelist($whitelist, $replace), $expected);
+        $this->assertEquals($expected, $this->CrudData->whitelist($whitelist, $replace));
     }
     
     /**
@@ -117,6 +110,18 @@ class CrudDataTest extends TestCase
         ];
         return $return;
     }
+
+    /**
+     * Test the whitelist function with a pre-populated whitelist
+     * 
+     * @dataProvider whitelistProviderPopulated
+     */
+    public function testWhitelistPopulated($whitelist, $blacklist, $replace, $expected, $debug = FALSE) {
+        $this->CrudData->blacklist($blacklist);
+        $this->CrudData->whitelist(['activity', 'status', 'task_id'], TRUE);
+        $this->assertEquals($expected, $this->CrudData->whitelist($whitelist, $replace));
+    }
+    
     
     /**
      * Build as:
@@ -155,9 +160,9 @@ class CrudDataTest extends TestCase
             [
                 [], [], TRUE, $columnKeys
             ],
-            //Test-2
+//            Test-2
             [
-                ['id', 'created', 'modified'], [], FALSE, ['id', 'created', 'modified'] + $populatedWhitelist
+                ['id', 'created', 'modified'], [], FALSE, ['activity', 'status', 'task_id', 'id', 'created', 'modified']
             ],
             //Test-3
             [
@@ -165,17 +170,65 @@ class CrudDataTest extends TestCase
             ],
             //Test-4
             [
-                ['id', 'created', 'modified'], [], FALSE, ['id', 'created', 'modified'] + $populatedWhitelist
-            ],
-            //Test-5
-            [
                 ['id', 'created', 'modified'], [], TRUE, ['id', 'created', 'modified']
             ],
-            //Test-6
+            //Test-5
             [
                 $populatedWhitelist, [], FALSE, $populatedWhitelist
             ],
         ];
         return $return;
+    }
+    
+    /**
+     * Test the blacklist function
+     * 
+     * @dataProvider blacklistProvider
+     */
+    public function testBlacklist($pre_pop, $blacklist, $replace, $expected) {
+        $this->CrudData->blacklist($pre_pop, TRUE);
+        $this->assertEquals($expected, $this->CrudData->blacklist($blacklist, $replace));
+    }
+    
+    /**
+     * Build as:
+     * 
+     */
+    public function blacklistProvider() {
+        return [
+            //test0
+            [
+                [],[],FALSE,[]
+            ],
+            //test1
+            [
+                [],[],TRUE,[]
+            ],
+            //test2
+            [
+                [],['id'],FALSE,['id']
+            ],
+            //test3
+            [
+                [],['id'],TRUE,['id']
+            ],
+            //test4
+            [
+                ['creation'],[],FALSE,['creation']
+            ],
+            //test5
+            [
+                ['creation'],[],TRUE,[]
+            ],
+            //test6
+            [
+                ['creation'],['id'],FALSE,['creation']
+            ],
+            //test7
+            [
+                ['creation'],['id'],TRUE,['id']
+            ],
+            
+        ];
     }
 }
