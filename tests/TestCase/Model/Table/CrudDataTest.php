@@ -231,4 +231,14 @@ class CrudDataTest extends TestCase
             
         ];
     }
+	
+	/**
+	 * 
+	 * @param type $column
+	 * @param type $schema
+	 * @param type $expected
+	 */
+	public function testColumns($column, $schema, $expected) {
+		$this->assertEquals($expected, $this->CrudData->columns($column, $schema));
+	}
 }
