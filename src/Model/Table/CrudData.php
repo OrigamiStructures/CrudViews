@@ -330,34 +330,6 @@ class CrudData {
 	}
 
 	/**
-	 * Retrieve some attribute entries
-	 * 
-	 * Attributes are stored as additional arry nodes on the columns array. 
-	 * Each column in the entity is accessed by its name as the key and has 
-	 * a 'type' node as returned by the schema(). 
-	 * Attributes are also stored under thier column and are keyed by the name 
-	 * of the DOM element they will apply to as the various decorated levels 
-	 * of output are rendered.
-	 * 
-	 * This method can return any level of the array data.
-	 * 
-	 * @param array $attributes
-	 * @param boolean $replace
-	 * @return array
-	 */
-	public function attributes($attributes = NULL) {
-		if (is_null($attributes)) {
-			return $this->columns();
-		}
-		$steps = explode('.', $attributes);
-		$steps[0] .= '.attributes';
-		$result = Hash::extract($this->columns(), implode('.', $steps));
-		return $result;
-		return (count($result) === 1) ? $result[0] : $result;
-		
-	}
-
-	/**
 	 * Set and/or return override action
 	 * 
 	 * The action name will select a named Decoration strategy in CrudHelper. And the 
@@ -422,30 +394,45 @@ class CrudData {
 	 * @param void|string $column
 	 * @return array
 	 */
-	public function columns($column = NULL) {
-		$value = NULL;
+	public function columns($column = NULL, $schema = FALSE) {
+		$columns = $schema ?
+			$this->_table->schema() :
+			$this->_columns;
+		$result = NULL;
 		if (is_null($column)) {
-			$value = $this->_columns;
+			$result = $columns;
 		} elseif (is_string($column)) {
-			$value = isset($this->_columns[$column]) ? $this->_columns[$column] : NULL;
+			$result = isset($columns[$column]) ? $columns[$column] : NULL;
 		}
-		return $value;
-		
-//		if (isset($this->_columns)) {
-//			return $this->_columns;
-//		} else {
-//			return $this->_columns();
-//		}
+		return $result;		
 	}
 
 	/**
-	 * get data about a column in the schema
+	 * Retrieve some attribute entries
 	 * 
-	 * @param string $name
+	 * Attributes are stored as additional arry nodes on the columns array. 
+	 * Each column in the entity is accessed by its name as the key and has 
+	 * a 'type' node as returned by the schema(). 
+	 * Attributes are also stored under thier column and are keyed by the name 
+	 * of the DOM element they will apply to as the various decorated levels 
+	 * of output are rendered.
+	 * 
+	 * This method can return any level of the array data.
+	 * 
+	 * @param array $attributes
+	 * @param boolean $replace
 	 * @return array
 	 */
-	public function column($name) {
-		return $this->_table->schema()->column($name);
+	public function attributes($attributes = NULL) {
+		if (is_null($attributes)) {
+			return $this->columns();
+		}
+		$steps = explode('.', $attributes);
+		$steps[0] .= '.attributes';
+		$result = Hash::extract($this->columns(), implode('.', $steps));
+		return $result;
+		return (count($result) === 1) ? $result[0] : $result;
+		
 	}
 
 	/**
