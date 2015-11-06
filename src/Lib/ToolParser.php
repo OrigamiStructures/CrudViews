@@ -54,7 +54,7 @@ class ToolParser {
 	 */
 	public function action($tool) {
 		if (is_array($tool)) {
-			$tool = array_keys($tool)[0];
+			$tool = $tool[array_keys($tool)[0]];
 		}
 		return $tool;
 	}
