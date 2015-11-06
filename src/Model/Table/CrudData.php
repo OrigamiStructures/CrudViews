@@ -522,6 +522,21 @@ class CrudData {
 		}
 		return $this->_foreign_keys;
 	}
+	
+	public function addColumn($column, $specs) {
+		$this->_table->schema()->addColumn($column, $specs);
+		$this->registerColumn($column);
+	}
+	
+	protected function registerColumn($column) {
+		$foreign_keys = array_keys($this->foreignKeys());
+		$schema = $this->_table->schema();
+		if (in_array($column, $foreign_keys)) {
+			$this->_columns[$column] = ['foreign_key' => TRUE];
+		}
+		$this->_columns[$column]['type'] = isset($this->type_override[$column]) ? $this->type_override[$column] : $schema->columnType($column);
+		$this->_columns[$column]['attributes'] = isset($this->_columns[$column]['attributes']) ? $this->_columns[$column]['attributes'] : [];
+	}
 
 	/**
 	 * Get an array of the columns and information about them for this Models table
@@ -545,14 +560,7 @@ class CrudData {
 //					debug('removing '.$name);
 					continue;
 				}
-				if (in_array($name, $foreign_keys)) {
-//					debug("foreign key $name");
-					$this->_columns[$name] = ['foreign_key' => TRUE];
-				}
-				$this->_columns[$name]['type'] = isset($this->type_override[$name]) ? $this->type_override[$name] : $schema->columnType($name);
-//				debug('override set for '.$name . '::'.isset($this->type_override[$name]));
-				$this->_columns[$name]['attributes'] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : [];
-//				debug('attribute set for '.$name . '::'.isset($this->_attrubutes[$name]));
+				$this->registerColumn($name);
 			}
 		}
 //		debug($this->_columns);
