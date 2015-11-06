@@ -618,8 +618,8 @@ class CrudData {
 		if (is_array($key)) {
 			$merge = is_null($value) ? TRUE : $value;
 			foreach ($key as $settings) {
-				$key = array_keys($settings)[0];
-				$this->_addAttribute($key, $settings[$key], $merge);
+				$column = array_keys($settings)[0];
+				$this->_addAttribute($column, $settings[$column], $merge);
 			}
 		} else {
 			$this->_addAttribute($key, $value, $merge);
