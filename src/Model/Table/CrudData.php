@@ -23,9 +23,11 @@ use Cake\ORM\Table;
 use CrudViews\Lib\NameConventions;
 use Bake\Utility\Model\AssociationFilter;
 use \Cake\Utility\Hash;
+use Cake\Collection\Collection;
 
-define('COLUMNS', FALSE);
-define('SCHEMA', TRUE);
+define('CRUDDATA_ALL_COLUMNS', NULL);
+define('CRUDDATA_SCHEMA', TRUE);
+define('DEFAULT_OVERRIDES', FALSE);
 
 /**
  * CakePHP CrudData
@@ -315,32 +317,58 @@ class CrudData {
 	}
 
 	/**
-	 * Set an override for a column
+	 * Set an override for a column, columns or restore all to default
 	 * 
-	 * @param array $types
-	 * @param boolean $replace
+	 * Pass CRUDDATA_DEFAULT_OVERRIDES (FALSE) to restore to default types for all columns
+	 * Pass string_name, string_value to override one column
+	 * Pass [
+	 *		string_name => string_value,
+	 * 		string_name => string_value
+	 * ] for multiple overrides at once
+	 * 
+	 * @param array|string|boolean $override
+	 * @param string $type
 	 * @return array
 	 */
-	public function override($types = [], $replace = FALSE) {
-		// REWITE THIS TO ACCEPT AND [] OR TWO STRINGS
-		if ($replace) {
-			$this->_override = $types;
+	public function override($override = NULL, $type = 'string') {
+		if ($override === FALSE) {
+			$this->_clearOverrides();
+			
+		} elseif (is_string($override)) {
+			$this->_columns[$override]['type'] = $type;
+			
+		} elseif (is_array($override)) {
+			foreach ($override as $column => $type) {
+				$this->_columns[$column]['type'] = $type;
+			}
 		}
-		if (!empty($types) || $replace) {
-			$this->_override += $types;
-			$this->update();
-		}
-		// this is a temporary patch to modernize the method.
-		// this should be the only behavior later. the other
-		// stuff needs to be removed from the system
-		foreach ($this->_override as $column => $type) {
-			$this->_columns[$column]['type'] = $type;
-		}
-		return $this->_override;
+		$columns = new Collection($this->columns());
+		$overrides = [];
+		return $columns->map(function($value, $key) use(&$overrides) {
+			return $overrides[$key] = ['type' => $value['type']];
+		})->toArray();
 	}
 	
-	public function hasOverride($column) {
-		return $this->columns($column)['type'] !== $this->columns($column, SCHEMA)['type'];
+	/**
+	 * Set all column types to their defaults as defined in Table->schema
+	 */
+	protected function _clearOverrides() {
+		$defaults = $this->columns(CRUDDATA_ALL_COLUMNS, CRUDDATA_SCHEMA);
+		foreach ($defaults as $column => $details) {
+			$this->_columns[$column]['type'] = $details['type'];
+		}
+	}
+
+	/**
+	 * Check a column for the existance of an override type
+	 * 
+	 * @param string $column
+	 * @return boolean|string FALSE or the type
+	 */
+		public function hasOverride($column) {
+		return ($this->columns($column)['type'] === $this->columns($column, CRUDDATA_SCHEMA)['type']) ? 
+				FALSE : 
+				$this->columns($column)['type'];
 	}
 
 	/**
@@ -406,8 +434,12 @@ class CrudData {
 	/**
 	 * Get all or a single column entry
 	 * 
+	 * constants for use as arguments
+	 *	ALL_COLUMNS = NULL
+	 *	CRUDDATA_SCHEMA = FALSE
+	 * 
 	 * @param void|string $column
-	 * @param boolean $schema COLUMNS=internal property SCHEMA=table schema
+	 * @param boolean $schema
 	 * @return array
 	 */
 	public function columns($column = NULL, $schema = FALSE) {
