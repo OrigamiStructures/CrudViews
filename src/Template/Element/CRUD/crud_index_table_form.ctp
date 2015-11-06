@@ -5,7 +5,7 @@ use CrudViews\Lib\Uuid;
 	<thead>
 		<tr>
 			<?php
-			foreach ($this->Crud->whitelist() as $column_name => $column_specs) {
+			foreach ($this->Crud->whitelist() as $column_name) {
 				echo '<th>' . $this->Paginator->sort($column_name) . '</th>';
 			}
 			?>
@@ -26,7 +26,7 @@ use CrudViews\Lib\Uuid;
 		<tbody>
 			<tr>
 				<?php
-				foreach ($this->Crud->whitelist() as $field => $specs) :
+				foreach ($this->Crud->whitelist() as $field) :
 					echo "\t\t\t\t" . $this->Crud->output($field) . "\n";
 				endforeach;
 				?>

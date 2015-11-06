@@ -7,7 +7,7 @@ $label = ucwords($this->request->action . ' ' . Cake\Utility\Inflector::singular
     <fieldset>
         <legend><?= __("$label") ?></legend>
         <?php
-			foreach ($this->Crud->whitelist() as $field => $type) :
+			foreach ($this->Crud->whitelist() as $field) :
 				echo $this->Form->input($field, ['value' => (isset($$ent) ? $$ent->$field : '')]);
 			endforeach;
         if (!empty($associations['BelongsToMany'])) {

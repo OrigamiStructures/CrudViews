@@ -7,7 +7,7 @@ if (isset($flag)) {
     <thead>
         <tr>
 			<?php
-			foreach ($this->Crud->whitelist() as $column_name => $column_specs) {
+			foreach ($this->Crud->whitelist() as $column_name) {
 				echo '<th>' . $this->Paginator->sort($column_name) . '</th>';
 			}
 			?>
@@ -21,7 +21,7 @@ if (isset($flag)) {
         ?>
 	        <tr class="record">
 				<?php
-				foreach ($this->Crud->whitelist() as $field => $specs) :
+				foreach ($this->Crud->whitelist() as $field) :
 					echo "\t\t\t\t" . $this->Crud->output($field) . "\n";
 				endforeach;
 				?>
