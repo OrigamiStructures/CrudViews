@@ -18,7 +18,7 @@ use Cake\Utility\Inflector;
 			}
 			if (isset($this->Crud->foreignKeys()[$field])) {
 				$field = new NameConventions($field);
-				$fieldData = $this->Crud->column($field->name);
+				$fieldData = $this->Crud->columns($field->name);
 				if (!empty($fieldData['null'])) {
 					echo $this->Form->input(
 						$field->name, 
@@ -35,7 +35,7 @@ use Cake\Utility\Inflector;
 				continue;
 			}
 			if (!in_array($field, ['created', 'modified', 'updated'])) {
-				$fieldData = $this->Crud->column($field);
+				$fieldData = $this->Crud->columns($field);
 				if (($fieldData['type'] === 'date') && (!empty($fieldData['null']))) {
 					echo $this->Form->input(
 						$field, 
