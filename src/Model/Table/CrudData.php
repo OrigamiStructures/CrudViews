@@ -25,7 +25,7 @@ use Bake\Utility\Model\AssociationFilter;
 use \Cake\Utility\Hash;
 
 define('COLUMNS', FALSE);
-define('SCHEMA', FALSE);
+define('SCHEMA', TRUE);
 
 /**
  * CakePHP CrudData
@@ -190,9 +190,9 @@ class CrudData {
 	 * 
 	 * @return Table
 	 */
-	public function table() {
-		return $this->_table;
-	}
+//	public function table() {
+//		return $this->_table;
+//	}
 
 	/**
 	 * Find the primary key(s) set in the data table
@@ -322,6 +322,7 @@ class CrudData {
 	 * @return array
 	 */
 	public function override($types = [], $replace = FALSE) {
+		// REWITE THIS TO ACCEPT AND [] OR TWO STRINGS
 		if ($replace) {
 			$this->_override = $types;
 		}
@@ -329,7 +330,17 @@ class CrudData {
 			$this->_override += $types;
 			$this->update();
 		}
+		// this is a temporary patch to modernize the method.
+		// this should be the only behavior later. the other
+		// stuff needs to be removed from the system
+		foreach ($this->_override as $column => $type) {
+			$this->_columns[$column]['type'] = $type;
+		}
 		return $this->_override;
+	}
+	
+	public function hasOverride($column) {
+		return $this->columns($column)['type'] !== $this->columns($column, SCHEMA)['type'];
 	}
 
 	/**
@@ -391,6 +402,7 @@ class CrudData {
 	public function filteredAssociations() {
 		return $this->_associationFilter;
 	}
+	
 	/**
 	 * Get all or a single column entry
 	 * 
@@ -400,7 +412,7 @@ class CrudData {
 	 */
 	public function columns($column = NULL, $schema = FALSE) {
 		$columns = $schema ?
-			$this->_table->schema() :
+			$this->schema() :
 			$this->_columns;
 		$result = NULL;
 		if (is_null($column)) {
@@ -409,6 +421,21 @@ class CrudData {
 			$result = isset($columns[$column]) ? $columns[$column] : NULL;
 		}
 		return $result;		
+	}
+	
+	/**
+	 * Get the Table schema as currently defined
+	 * 
+	 * @return array
+	 */
+	protected function schema() {
+		$structure = [];
+		$schema = $this->_table->schema();
+		$columns = $schema->columns();
+		foreach($columns as $column) {
+			$structure[$column] = $schema->column($column);
+		}
+		return $structure;
 	}
 
 	/**
@@ -423,20 +450,19 @@ class CrudData {
 	 * 
 	 * This method can return any level of the array data.
 	 * 
-	 * @param array $attributes
+	 * @param array $path
 	 * @param boolean $replace
 	 * @return array
 	 */
-	public function attributes($attributes = NULL) {
-		if (is_null($attributes)) {
+	public function attributes($path = NULL) {
+		if (is_null($path)) {
 			return $this->columns();
 		}
-		$steps = explode('.', $attributes);
+		$steps = explode('.', $path);
 		$steps[0] .= '.attributes';
 		$result = Hash::extract($this->columns(), implode('.', $steps));
 		return $result;
 		return (count($result) === 1) ? $result[0] : $result;
-		
 	}
 
 	/**

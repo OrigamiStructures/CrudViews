@@ -26,7 +26,7 @@ class BelongsToDecorator extends ColumnDecorator {
 
 	public function output($field, $options = array()) {
 		// if there is a override type on the field, don't make it a belongsTo link
-		if (!in_array($this->helper->columnType($field), $this->helper->override())) {
+		if (!$this->helper->hasOverride($field)) {
 			
 			// if this is a belongsTo field, make it a link to the parent record
 			if (in_array($field, $this->helper->foreignKeys()) && $this->belongsTo = $this->fieldIsKey($field, 'manyToOne')) {

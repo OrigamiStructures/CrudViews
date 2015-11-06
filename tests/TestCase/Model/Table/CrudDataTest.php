@@ -240,5 +240,27 @@ class CrudDataTest extends TestCase
 	 */
 	public function testColumns($column, $schema, $expected) {
 		$this->assertEquals($expected, $this->CrudData->columns($column, $schema));
+		// when result if from schema the array will contain entries like this:
+//		'created' => [
+//			'type' => 'timestamp',
+//			'length' => null,
+//			'null' => true,
+//			'default' => null,
+//			'comment' => '',
+//			'baseType' => null,
+//			'precision' => null
+//		],
+		
+		// when from columns the array will contain entries like this:
+//		'task_id' => [
+	//		'foreign_key' => true,
+	//		'type' => 'integer',
+	//		'attributes' => [
+	//			'div' => [
+	//				'class' => 'columns small-5'
+	//			]
+	//		]
+	//	],
+
 	}
 }
