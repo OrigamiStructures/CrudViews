@@ -24,6 +24,9 @@ use CrudViews\Lib\NameConventions;
 use Bake\Utility\Model\AssociationFilter;
 use \Cake\Utility\Hash;
 
+define('COLUMNS', FALSE);
+define('SCHEMA', FALSE);
+
 /**
  * CakePHP CrudData
  * @author dondrake
@@ -392,6 +395,7 @@ class CrudData {
 	 * Get all or a single column entry
 	 * 
 	 * @param void|string $column
+	 * @param boolean $schema COLUMNS=internal property SCHEMA=table schema
 	 * @return array
 	 */
 	public function columns($column = NULL, $schema = FALSE) {
@@ -596,14 +600,35 @@ class CrudData {
 	 * Attributes are keyed by the name of the DOM element they will apply 
 	 * to as the various decorated levels of output are rendered.
 	 * 
+	 * args:
+	 * ( column_name, [ tag_name => [ attr_name => attr_val ]], merge_boolean )
+	 * or
+	 * (
+	 *	 ]
+	 *		[ col_name => [ tag_name => [ attr_name => attr_val ]]],
+	 *		[ col_name => [ tag_name => [ attr_name => attr_val ]]]
+	 *	 ], merge_boolean
+	 * )
+	 * 
 	 * @param string $key
 	 * @param string $value
 	 * @param boolean $merge
 	 */
 	public function addAttributes($key = null, $value = null, $merge = true) {
-		$this->_defaultConfig = $this->_columns[$key]['attributes'];
-		$this->_columns[$key]['attributes'] = $this->config($key, $value, $merge)->config()[$key];
-//		debug($this->_columns);
+		if (is_array($key)) {
+			$merge = is_null($value) ? TRUE : $value;
+			foreach ($key as $settings) {
+				$key = array_keys($settings)[0];
+				$this->_addAttribute($key, $settings[$key], $merge);
+			}
+		} else {
+			$this->_addAttribute($key, $value, $merge);
+		}
+	}
+	
+	protected function _addAttribute($column, $attributes, $merge) {
+		$this->_defaultConfig = $this->_columns[$column]['attributes'];
+		$this->_columns[$column]['attributes'] = $this->config($column, $attributes, $merge)->config()[$column];
 	}
 	
 	public function strategyIs($strategy) {
