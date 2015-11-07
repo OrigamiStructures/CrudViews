@@ -5,6 +5,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use CrudViews\Model\Table\CrudData;
 use App\Model\Table\TimesTable;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * CrudViews\Model\Table\CrudDataTable Test Case
@@ -232,35 +233,56 @@ class CrudDataTest extends TestCase
         ];
     }
 	
+	public function columnsProvider () {
+		$schema_source = TRUE;
+		$property_source = FALSE;
+		return [
+			// [column_name, source, verification_key, verification_result]
+			/*TEST 0*/
+			[NULL, $property_source, 'id',
+				['type' => 'integer', 'attributes' => []]
+			],
+			/*TEST 1*/
+			[NULL, $schema_source, 'id',
+				['type' => 'integer',
+				'length' => 11,
+				'unsigned' => false,
+				'null' => false,
+				'default' => null,
+				'comment' => '',
+				'autoIncrement' => true,
+				'precision' => null				
+			]],
+			/*TEST 2*/
+			['project_id', $property_source, 'project_id',
+				['foreign_key' => true, 'type' => 'integer', 'attributes' => []]
+			],
+			/*TEST 3*/
+			['project_id', $schema_source, 'project_id',
+				['type' => 'integer',
+				'length' => (int) 11,
+				'unsigned' => false,
+				'null' => true,
+				'default' => null,
+				'comment' => '',
+				'precision' => null,
+				'autoIncrement' => null]
+			],
+		];
+	}
 	/**
-	 * 
+	 * @dataProvider columnsProvider
+
 	 * @param type $column
 	 * @param type $schema
 	 * @param type $expected
 	 */
-	public function testColumns($column, $schema, $expected) {
-		$this->assertEquals($expected, $this->CrudData->columns($column, $schema));
-		// when result if from schema the array will contain entries like this:
-//		'created' => [
-//			'type' => 'timestamp',
-//			'length' => null,
-//			'null' => true,
-//			'default' => null,
-//			'comment' => '',
-//			'baseType' => null,
-//			'precision' => null
-//		],
-		
-		// when from columns the array will contain entries like this:
-//		'task_id' => [
-	//		'foreign_key' => true,
-	//		'type' => 'integer',
-	//		'attributes' => [
-	//			'div' => [
-	//				'class' => 'columns small-5'
-	//			]
-	//		]
-	//	],
-
+	public function testColumns($column, $schema, $eval_column, $expected) {
+		if (is_string($column)) {
+			$this->assertEquals($expected, $this->CrudData->columns($column, $schema));
+		} else {
+			$this->assertEquals($expected, $this->CrudData->columns($column, $schema)[$eval_column]);
+			$this->assertCount(12, $this->CrudData->columns($column, $schema));
+		}
 	}
 }
