@@ -154,29 +154,18 @@ class CrudDataTest extends TestCase
         ];
         $return = [
             //Test-0
-            [
-                [], [], FALSE, $populatedWhitelist
-            ],
+            [ [], [], FALSE, $populatedWhitelist ],
             //Test-1
-            [
-                [], [], TRUE, $columnKeys
-            ],
+            [ [], [], TRUE, $columnKeys ],
 //            Test-2
-            [
-                ['id', 'created', 'modified'], [], FALSE, ['activity', 'status', 'task_id', 'id', 'created', 'modified']
-            ],
+            [ ['id', 'created', 'modified'], [], FALSE, 
+			  ['activity', 'status', 'task_id', 'id', 'created', 'modified'] ],
             //Test-3
-            [
-                [], ['id'], FALSE, $populatedWhitelist
-            ],
+            [ [], ['id'], FALSE, $populatedWhitelist ],
             //Test-4
-            [
-                ['id', 'created', 'modified'], [], TRUE, ['id', 'created', 'modified']
-            ],
+            [ ['id', 'created', 'modified'], [], TRUE, ['id', 'created', 'modified'] ],
             //Test-5
-            [
-                $populatedWhitelist, [], FALSE, $populatedWhitelist
-            ],
+            [ $populatedWhitelist, [], FALSE, $populatedWhitelist ],
         ];
         return $return;
     }
@@ -198,38 +187,21 @@ class CrudDataTest extends TestCase
     public function blacklistProvider() {
         return [
             //test0
-            [
-                [],[],FALSE,[]
-            ],
+            [ [],[],FALSE,[] ],
             //test1
-            [
-                [],[],TRUE,[]
-            ],
+            [ [],[],TRUE,[] ],
             //test2
-            [
-                [],['id'],FALSE,['id']
-            ],
+            [ [],['id'],FALSE,['id'] ],
             //test3
-            [
-                [],['id'],TRUE,['id']
-            ],
+            [ [],['id'],TRUE,['id'] ],
             //test4
-            [
-                ['creation'],[],FALSE,['creation']
-            ],
+            [ ['creation'],[],FALSE,['creation'] ],
             //test5
-            [
-                ['creation'],[],TRUE,[]
-            ],
+            [ ['creation'],[],TRUE,[] ],
             //test6
-            [
-                ['creation'],['id'],FALSE,['creation', 'id']
-            ],
+            [ ['creation'],['id'],FALSE,['creation', 'id'] ],
             //test7
-            [
-                ['creation'],['id'],TRUE,['id']
-            ],
-            
+            [ ['creation'],['id'],TRUE,['id'] ],
         ];
     }
 	
@@ -239,12 +211,14 @@ class CrudDataTest extends TestCase
 		return [
 			// [column_name, source, verification_key, verification_result]
 			/*TEST 0*/
-			[NULL, $property_source, 'id',
-				['type' => 'integer', 'attributes' => []]
+			[NULL, $property_source, // args
+				'id',				 // verif-key
+				['type' => 'integer', 'attributes' => []] // verif-val
 			],
 			/*TEST 1*/
-			[NULL, $schema_source, 'id',
-				['type' => 'integer',
+			[NULL, $schema_source,		// args
+				'id',					// verif-key
+				['type' => 'integer',	// verif-val
 				'length' => 11,
 				'unsigned' => false,
 				'null' => false,
@@ -254,12 +228,16 @@ class CrudDataTest extends TestCase
 				'precision' => null				
 			]],
 			/*TEST 2*/
-			['project_id', $property_source, 'project_id',
-				['foreign_key' => true, 'type' => 'integer', 'attributes' => []]
+			['project_id', $property_source,	// args
+				'project_id',					// verif-key
+				['foreign_key' => true,			// verif-val
+					'type' => 'integer', 
+					'attributes' => []]
 			],
 			/*TEST 3*/
-			['project_id', $schema_source, 'project_id',
-				['type' => 'integer',
+			['project_id', $schema_source,	// args
+				'project_id',				// verif-key
+				['type' => 'integer',		// verif-val
 				'length' => (int) 11,
 				'unsigned' => false,
 				'null' => true,
@@ -270,12 +248,9 @@ class CrudDataTest extends TestCase
 			],
 		];
 	}
+	
 	/**
 	 * @dataProvider columnsProvider
-
-	 * @param type $column
-	 * @param type $schema
-	 * @param type $expected
 	 */
 	public function testColumns($column, $schema, $eval_column, $expected) {
 		if (is_string($column)) {
@@ -284,5 +259,48 @@ class CrudDataTest extends TestCase
 			$this->assertEquals($expected, $this->CrudData->columns($column, $schema)[$eval_column]);
 			$this->assertCount(12, $this->CrudData->columns($column, $schema));
 		}
+	}
+	
+	public function addColumnProvider() {
+		return [
+			// TEST 0
+			['duration', ['type' => 'decimal', 'precision' => 2, 'null' => TRUE], // args
+				['type' => 'decimal', 'attributes' => []], // prop_expected
+				['type' => 'decimal',					   // schema expected
+				'precision' => (int) 2,
+				'length' => null,
+				'null' => TRUE,
+				'default' => null,
+				'comment' => null,
+				'unsigned' => null],
+				FALSE										// pre_existing
+			],
+			['project_id', ['type' => 'decimal', 'precision' => 2, 'null' => TRUE], // args
+				['type' => 'decimal', 
+				'attributes' => ['class' => 'existing'],
+				'foreign_key' => true],					   // prop_expected
+				['type' => 'decimal',					   // schema expected
+				'length' => null,
+				'unsigned' => null,
+				'null' => true,
+				'default' => null,
+				'comment' => null,
+				'precision' => 2],
+				TRUE										// pre_existing
+			],
+		];
+	}
+	
+	/**
+	 * @dataProvider addColumnProvider
+	 */
+	public function testAddColumn($column, $specs, $prop_expected, $schema_expected, $pre_existing) {
+		if ($pre_existing) {
+			$this->CrudData->addAttributes($column, ['class' => 'existing']);
+		}
+		$this->CrudData->addColumn($column, $specs);
+
+		$this->assertEquals($prop_expected, $this->CrudData->columns($column));
+		$this->assertEquals($schema_expected, $this->CrudData->columns($column, TRUE));
 	}
 }

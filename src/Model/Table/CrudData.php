@@ -581,10 +581,16 @@ class CrudData {
 		$foreign_keys = array_keys($this->foreignKeys());
 		$schema = $this->_table->schema();
 		if (in_array($column, $foreign_keys)) {
-			$this->_columns[$column] = ['foreign_key' => TRUE];
+			$this->_columns[$column]['foreign_key'] = TRUE;
 		}
-		$this->_columns[$column]['type'] = isset($this->type_override[$column]) ? $this->type_override[$column] : $schema->columnType($column);
-		$this->_columns[$column]['attributes'] = isset($this->_columns[$column]['attributes']) ? $this->_columns[$column]['attributes'] : [];
+		
+		// using addColumn to change an existing col should us the new 'type'
+//		$this->_columns[$column]['type'] = isset($this->type_override[$column]) ? 
+//			$this->type_override[$column] : 
+//			$schema->columnType($column);
+		$this->_columns[$column]['attributes'] = isset($this->_columns[$column]['attributes']) ? 
+			$this->_columns[$column]['attributes'] : 
+			[];
 	}
 
 	/**
