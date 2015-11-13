@@ -43,6 +43,10 @@ class CrudDataTest extends TestCase
 
         parent::tearDown();
     }
+	
+//	public function coverage() {
+//		debug(get_class_methods($this->CrudData));
+//	}
 
     /**
      * Test initial setup
@@ -315,16 +319,32 @@ class CrudDataTest extends TestCase
 		$this->assertEquals($schema_expected, $this->CrudData->columns($column, TRUE));
 	}
 	
+	public function hasOverrideProvider() {
+		return [
+			['newtype', 'project_id', ['project_id' => 'newtype']],
+			[FALSE, 'id', FALSE]
+		];
+	}
+
+	/**
+	 * 
+	 * @dataProvider hasOverrideProvider
+	 */
+	public function testHasOverride($expected, $column, $override) {
+		$this->CrudData->override($override);
+		$this->assertEquals($expected, $this->CrudData->hasOverride($column));
+	}
+	
 	public function overrideProvider() {
 		$c0 = $c1 = $c2 = array (
-		  'time_in' => array ('type' => 'timestamp'),
-		  'time_out' => array ('type' => 'timestamp')
+		  'time_in' =>  FALSE,
+		  'time_out' => FALSE
 		);
 		
-		$c1['time_in']['type'] = 'datetime';
+		$c1['time_in'] = 'datetime';
 		
-		$c2['time_in']['type'] = 'random';
-		$c2['time_out']['type'] = 'datetime';
+		$c2['time_in'] = 'random';
+		$c2['time_out'] = 'datetime';
 				
 		return [
 			// test 1, defaults - no overrides
@@ -340,8 +360,72 @@ class CrudDataTest extends TestCase
 	 * @dataProvider overrideProvider
 	 */
 	public function testOverride($expected, $arg1, $arg2) {
+		$this->CrudData->override($arg1, $arg2);
 		$this->assertEquals(
-				Hash::extract($expected, 'time_{n}.type'), 
-				Hash::extract($this->CrudData->override($arg1, $arg2), 'time_{n}.type'));
+				$expected['time_in'], 
+				$this->CrudData->hasOverride('time_in'));
+		$this->assertEquals(
+				$expected['time_out'], 
+				$this->CrudData->hasOverride('time_out'));
+	}
+	
+	public function addAttributesProvider() {
+		// expected, [args for addAttributes - 1 to 3 args], [optional arg to pre-manipulate attributes]
+		return [
+			// test 1-2 - call without making a change
+			[
+				[], 
+				[ [] ]
+			],
+			[
+				['p' => ['class' => 'modified']],					// expected
+				[ [] ],													// test this change
+				['time_out' => ['p' => ['class' => 'modified']] ]	// from this starting position
+			],
+			// test 3-4 - set with string, array, don't merge
+			[
+				['div' => ['id' => 'unique']],						// expected
+				['time_out', ['div' => ['id' => 'unique']], FALSE]	// test this change
+			],
+			[
+				['div' => ['id' => 'unique']],						// expected
+				['time_out', ['div' => ['id' => 'unique']], FALSE],	// test this change
+				['time_out' => ['p' => ['class' => 'modified']] ]	// from this starting position
+			],
+			// test 5-6 - set with string, array, do merge
+			[
+				// let merge arg be default
+				['div' => ['id' => 'unique']],						// expected
+				['time_out', ['div' => ['id' => 'unique']]]			// test this change
+			],
+			[
+				// explicitly set merg arg
+				['p' => ['class' => 'modified'], 'div' => ['id' => 'unique']],	// expected
+				['time_out', ['div' => ['id' => 'unique']], TRUE],				// test this change
+				['time_out' => ['p' => ['class' => 'modified']] ]				// from this starting position
+			],
+			// test 7 - set multiple cols with array
+			[
+				['div' => ['id' => 'unique']],						// expected
+				[
+					[
+					'time_in' => ['div' => ['class' => 'common']],
+					'time_out' => ['div' => ['id' => 'unique']]		// test this change
+					]
+				]
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider addAttributesProvider
+	 */
+	public function testAddAttributes($expected, $args, $preload = FALSE) {
+		list($key, $value, $merge) = $args + [NULL, NULL, TRUE];
+		if ($preload !== FALSE) {
+			$this->CrudData->addAttributes($preload);
+		}
+		$this->CrudData->addAttributes($key, $value, $merge);
+		$this->assertEquals($expected, $this->CrudData->columns('time_out')['attributes']);
 	}
 }

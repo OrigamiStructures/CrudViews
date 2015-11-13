@@ -377,9 +377,10 @@ class CrudData {
 	 * @return boolean|string FALSE or the type
 	 */
 		public function hasOverride($column) {
-		return ($this->columns($column)['type'] === $this->columns($column, CRUDDATA_SCHEMA)['type']) ? 
+			
+		return ($this->columnType($column) === $this->columnType($column, CRUDDATA_SCHEMA)) ? 
 				FALSE : 
-				$this->columns($column)['type'];
+				$this->columnType($column);
 	}
 
 	/**
@@ -654,7 +655,7 @@ class CrudData {
 	/**
 	 * Add an attribute the the array
 	 * 
-	 * Attributes are stored as additional arry nodes on the columns array. 
+	 * Attributes are stored as additional array nodes on the columns array. 
 	 * Each column in the entity is accessed by its name as the key and has 
 	 * a 'type' node as returned by the schema(). 
 	 * Attributes are keyed by the name of the DOM element they will apply 
@@ -664,7 +665,7 @@ class CrudData {
 	 * ( column_name, [ tag_name => [ attr_name => attr_val ]], merge_boolean )
 	 * or
 	 * (
-	 *	 ]
+	 *	 [
 	 *		[ col_name => [ tag_name => [ attr_name => attr_val ]]],
 	 *		[ col_name => [ tag_name => [ attr_name => attr_val ]]]
 	 *	 ], merge_boolean
@@ -677,9 +678,8 @@ class CrudData {
 	public function addAttributes($key = null, $value = null, $merge = true) {
 		if (is_array($key)) {
 			$merge = is_null($value) ? TRUE : $value;
-			foreach ($key as $settings) {
-				$column = array_keys($settings)[0];
-				$this->_addAttribute($column, $settings[$column], $merge);
+			foreach ($key as $column => $settings) {
+				$this->_addAttribute($column, $settings, $merge);
 			}
 		} else {
 			$this->_addAttribute($key, $value, $merge);
