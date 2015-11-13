@@ -27,7 +27,7 @@ use Cake\Collection\Collection;
 
 define('CRUDDATA_ALL_COLUMNS', NULL);
 define('CRUDDATA_SCHEMA', TRUE);
-define('DEFAULT_OVERRIDES', FALSE);
+define('CRUDDATA_DEFAULT_OVERRIDES', FALSE);
 
 /**
  * CakePHP CrudData
@@ -136,7 +136,7 @@ class CrudData {
 	 *
 	 * @var array
 	 */
-	public $_columns;
+	public $_columns = [];
 
 	/**
 	 * AssociationFilter utility
@@ -181,21 +181,32 @@ class CrudData {
 		$this->_table = $table;
 		
 		$this->update();
-		$this->_columns = $this->_columns(TRUE);
+		$this->_columns = $this->_columns();
 //		debug($this->_associationFilter);
 //		debug($this->AssociationCollection);
 //		debug($this->_foreignKeys());die;
 	}
 	
 	/**
-	 * Return the table object
+	 * Get an array of the columns and information about them for this Models table
 	 * 
-	 * @return Table
+	 * If there is a whitelist, include only these fields. 
+	 * If there is no whitelist, but there is a blacklist, exclude these fields
+	 * type_override allows forcing a column to a specific type. This will something 
+	 * like having an image_name field (normally a text field) return as a `file` field type 
+	 * so the proper inputs/outputs can be generated.
+	 * 
+	 * @return array 
 	 */
-//	public function table() {
-//		return $this->_table;
-//	}
-
+	protected function _columns() {
+		$schema = $this->_table->schema();
+		$columns = $schema->columns();
+		foreach ($columns as $name) {
+			$this->registerColumn($name);
+		}
+		return $this->_columns;
+	}
+	
 	/**
 	 * Find the primary key(s) set in the data table
 	 * 
@@ -331,7 +342,7 @@ class CrudData {
 	 * @return array
 	 */
 	public function override($override = NULL, $type = 'string') {
-		if ($override === FALSE) {
+		if ($override === CRUDDATA_DEFAULT_OVERRIDES) {
 			$this->_clearOverrides();
 			
 		} elseif (is_string($override)) {
@@ -503,15 +514,8 @@ class CrudData {
 	 * @param string $field
 	 * @return string
 	 */
-	public function columnType($field) {
-		if (isset($this->_columns[$field])) {
-			if (isset($this->_override[$field])) {
-				return $this->_override[$field];
-			}
-			return $this->_columns[$field]['type'];
-		} else {
-			return NULL;
-		}
+	public function columnType($field, $schema = FALSE) {
+		return $column = $this->columns($field, $schema)['type'];
 	}
 
 //	public function entityName($name = NULL) {
@@ -572,56 +576,48 @@ class CrudData {
 		return $this->_foreign_keys;
 	}
 	
+	/**
+	 * Add/Change a column in the schema
+	 * 
+	 * Changes the table schema and the CrudData property. 
+	 * If the column existed and is being changed and the 
+	 * property version had attributes, they will be retained. 
+	 * But any other proper characteristic will be reset to 
+	 * values matching the new schema column.
+	 * 
+	 * @param string $column
+	 * @param array $specs
+	 */
 	public function addColumn($column, $specs) {
 		$this->_table->schema()->addColumn($column, $specs);
 		$this->registerColumn($column);
 	}
 	
+	/**
+	 * Set the column property to match the schema for a single column
+	 * 
+	 * Preserves attributes if the column existed and attrs were set. 
+	 * Always sets the 'type' to match schema. 
+	 * 
+	 * @param string $column
+	 */
 	protected function registerColumn($column) {
 		$foreign_keys = array_keys($this->foreignKeys());
 		$schema = $this->_table->schema();
 		if (in_array($column, $foreign_keys)) {
 			$this->_columns[$column]['foreign_key'] = TRUE;
+		} else {
+			$this->_columns[$column]['foreign_key'] = FALSE;
+			unset($this->_columns[$column]['foreign_key']);
 		}
 		
-		// using addColumn to change an existing col should us the new 'type'
-//		$this->_columns[$column]['type'] = isset($this->type_override[$column]) ? 
-//			$this->type_override[$column] : 
-//			$schema->columnType($column);
+		$this->_columns[$column]['type'] = $schema->columnType($column);
 		$this->_columns[$column]['attributes'] = isset($this->_columns[$column]['attributes']) ? 
 			$this->_columns[$column]['attributes'] : 
 			[];
+		
 	}
 
-	/**
-	 * Get an array of the columns and information about them for this Models table
-	 * 
-	 * If there is a whitelist, include only these fields. 
-	 * If there is no whitelist, but there is a blacklist, exclude these fields
-	 * type_override allows forcing a column to a specific type. This will something 
-	 * like having an image_name field (normally a text field) return as a `file` field type 
-	 * so the proper inputs/outputs can be generated.
-	 * 
-	 * @return array 
-	 */
-	protected function _columns($refresh = FALSE) {
-		if (!$this->_columns || $refresh) {
-			$this->_columns = [];
-			$foreign_keys = array_keys($this->foreignKeys());
-			$schema = $this->_table->schema();
-			$columns = $schema->columns();
-			foreach ($columns as $name) {
-				if ($this->filterColumn($name)) {
-//					debug('removing '.$name);
-					continue;
-				}
-				$this->registerColumn($name);
-			}
-		}
-//		debug($this->_columns);
-		return $this->_columns;
-	}
-	
 	/**
 	 * Does the whitelist or blacklist filter this column out
 	 * 

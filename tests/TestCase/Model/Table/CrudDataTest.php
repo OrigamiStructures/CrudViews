@@ -6,6 +6,7 @@ use Cake\TestSuite\TestCase;
 use CrudViews\Model\Table\CrudData;
 use App\Model\Table\TimesTable;
 use Cake\Datasource\ConnectionManager;
+use Cake\Utility\Hash;
 
 /**
  * CrudViews\Model\Table\CrudDataTable Test Case
@@ -246,6 +247,16 @@ class CrudDataTest extends TestCase
 				'precision' => null,
 				'autoIncrement' => null]
 			],
+			/*TEST 4*/
+			['bad_column', $property_source, // args
+				'bad_column',				 // verif-key
+				NULL // verif-val
+			],
+			/*TEST 5*/
+			['bad_column', $schema_source, // args
+				'bad_column',				 // verif-key
+				NULL // verif-val
+			],
 		];
 	}
 	
@@ -302,5 +313,35 @@ class CrudDataTest extends TestCase
 
 		$this->assertEquals($prop_expected, $this->CrudData->columns($column));
 		$this->assertEquals($schema_expected, $this->CrudData->columns($column, TRUE));
+	}
+	
+	public function overrideProvider() {
+		$c0 = $c1 = $c2 = array (
+		  'time_in' => array ('type' => 'timestamp'),
+		  'time_out' => array ('type' => 'timestamp')
+		);
+		
+		$c1['time_in']['type'] = 'datetime';
+		
+		$c2['time_in']['type'] = 'random';
+		$c2['time_out']['type'] = 'datetime';
+				
+		return [
+			// test 1, defaults - no overrides
+			[$c0, FALSE, NULL],
+			// test 2, set override with string-key, string-val
+			[$c1, 'time_in', 'datetime'],
+			// test 3, set multiple overrides via array
+			[$c2, ['time_in' => 'random', 'time_out' => 'datetime'], NULL]
+		];
+	}
+
+	/**
+	 * @dataProvider overrideProvider
+	 */
+	public function testOverride($expected, $arg1, $arg2) {
+		$this->assertEquals(
+				Hash::extract($expected, 'time_{n}.type'), 
+				Hash::extract($this->CrudData->override($arg1, $arg2), 'time_{n}.type'));
 	}
 }
