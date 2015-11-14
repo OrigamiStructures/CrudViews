@@ -485,9 +485,5 @@ class CrudDataTest extends TestCase
 		]);
 		$this->assertEquals($expected, $this->CrudData->attributes($path));
 	}
-	
-	public function testOverrideAction() {
-		debug($this->CrudData->overrideAction());
-	}
-	
+		
 }

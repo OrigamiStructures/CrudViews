@@ -395,23 +395,23 @@ class CrudData {
 	 * @param string $alternate
 	 * @return string or BOOLEAN FALSE
 	 */
-	public function overrideAction($actionAlternates = [], $replace = FALSE) {
-		//pass only a string action to get the alternate back, if already set
-		if (is_string($actionAlternates) && isset($this->_overrideAction[$actionAlternates])) {
-			return $this->_overrideAction[$actionAlternates];
-		} elseif (is_string($actionAlternates) && !isset($this->_overrideAction[$actionAlternates])) {
-			return FALSE;
-		}
-		
-		if ($replace) {
-			$this->_overrideAction = [];
-		}
-		if (!empty($actionAlternates) || $replace) {
-			while (list($key, $val) = each($actionAlternates)) {
-				$this->_overrideAction[$key] = $val;
-			}
-		}
-	}
+//	public function overrideAction($actionAlternates = [], $replace = FALSE) {
+//		//pass only a string action to get the alternate back, if already set
+//		if (is_string($actionAlternates) && isset($this->_overrideAction[$actionAlternates])) {
+//			return $this->_overrideAction[$actionAlternates];
+//		} elseif (is_string($actionAlternates) && !isset($this->_overrideAction[$actionAlternates])) {
+//			return FALSE;
+//		}
+//		
+//		if ($replace) {
+//			$this->_overrideAction = [];
+//		}
+//		if (!empty($actionAlternates) || $replace) {
+//			while (list($key, $val) = each($actionAlternates)) {
+//				$this->_overrideAction[$key] = $val;
+//			}
+//		}
+//	}
 
 	/**
 	 * Get current foreignKeys array
@@ -439,9 +439,9 @@ class CrudData {
 	 * 
 	 * @return array
 	 */
-	public function filteredAssociations() {
-		return $this->_associationFilter;
-	}
+//	public function filteredAssociations() { // NONE
+//		return $this->_associationFilter;
+//	}
 	
 	/**
 	 * Get all or a single column entry
