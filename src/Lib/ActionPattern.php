@@ -4,15 +4,15 @@ namespace CrudViews\Lib;
 use CrudViews\Lib\Collection;
 
 /**
- * ActionPattern - manage the Action Patterns that back up the Crud Veiw model and record tool generation
+ * ActionPattern - manage the Action Patterns that back up the Crud View model and record tool generation
  * 
  * Model and Record tool sets are stored in multi-layered structures.
  * The finished object (which this class returns and managages) is stored 
  * in one of three properties in CrudHelper. 
  * <pre>
  * property = CollectionObject -> [
- *		'name/alias' => CollectionObject [
- *			'view/name' => Object 
+ *		'model-alias' => CollectionObject [
+ *			'action-name' => Object 
  *				->content = [array of actions and labels]
  *				->parser = tools to return a label or action given a content node
  *				->keys = [array of ... ?]
