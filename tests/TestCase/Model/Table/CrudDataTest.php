@@ -428,4 +428,66 @@ class CrudDataTest extends TestCase
 		$this->CrudData->addAttributes($key, $value, $merge);
 		$this->assertEquals($expected, $this->CrudData->columns('time_out')['attributes']);
 	}
+	
+	public function primaryKeyProvider() {
+		return [
+			[ 'id', FALSE ],
+			[ ['id'], TRUE]
+		];
+	}
+	
+	/**
+	 * @dataProvider primaryKeyProvider
+	 */
+	public function testPrimaryKey($expected, $arg) {
+		$this->assertEquals($expected, $this->CrudData->primaryKey($arg));
+	}
+	
+	public function displayFieldProvider() {
+		return [
+			[ 'id' ],
+			[ 'strategy', 'strategy']
+		];
+	}
+
+	/**
+	 * @dataProvider displayFieldProvider
+	 */
+	public function testDisplayField($expected, $preset = FALSE) {
+		if ($preset) {
+			$this->Times->displayField($preset);
+		}
+		$this->assertEquals($expected, $this->CrudData->displayField());
+	}
+	
+	public function attributesProvider() {
+		return [
+			[ ['p' => [ 'class' => 'p_class', 'id' => 'pid']], 'time_in.special' ],
+			[ [ 'class' => 'p_class', 'id' => 'pid'], 'time_in.special.p' ],
+			[ ['class' => 'div_class'], 'time_out.div' ],
+			[ ['div' => ['class' => 'div_class']], 'time_out' ],
+		];
+	}
+
+	/**
+	 * @dataProvider attributesProvider
+	 */
+	public function testAttributes($expected, $path) {
+		$this->CrudData->addAttributes([
+			'time_in' => [
+				'special' => ['p' => [
+					'class' => 'p_class',
+					'id' => 'pid'
+				]],
+				'p' => ['class' => 'outer_p_class']
+			],
+			'time_out' => ['div' => ['class' => 'div_class']]
+		]);
+		$this->assertEquals($expected, $this->CrudData->attributes($path));
+	}
+	
+	public function testOverrideAction() {
+		debug($this->CrudData->overrideAction());
+	}
+	
 }

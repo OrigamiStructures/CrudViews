@@ -506,7 +506,6 @@ class CrudData {
 		$steps[0] .= '.attributes';
 		$result = Hash::extract($this->columns(), implode('.', $steps));
 		return $result;
-		return (count($result) === 1) ? $result[0] : $result;
 	}
 
 	/**
@@ -625,18 +624,18 @@ class CrudData {
 	 * @param string $name column name
 	 * @return boolean 
 	 */
-	public function filterColumn($name) {
-		if (!empty($this->_whitelist)) {
-			if (!in_array($name, $this->_whitelist)) {
-				return TRUE;
-			}
-		} elseif (!empty($this->_blacklist)) {
-			if (in_array($name, $this->_blacklist)) {
-				return TRUE;
-			}
-		}
-		return FALSE;
-	}
+//	public function filterColumn($name) {
+//		if (!empty($this->_whitelist)) {
+//			if (!in_array($name, $this->_whitelist)) {
+//				return TRUE;
+//			}
+//		} elseif (!empty($this->_blacklist)) {
+//			if (in_array($name, $this->_blacklist)) {
+//				return TRUE;
+//			}
+//		}
+//		return FALSE;
+//	}
 
 	/**
 	 * Get filtered associations
