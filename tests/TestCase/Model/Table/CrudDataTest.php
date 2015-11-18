@@ -53,12 +53,12 @@ class CrudDataTest extends TestCase
      *
      * @return void
      */
-    public function testInitialization()
-    {
-        $this->assertObjectHasAttribute("_whitelist", $this->CrudData);
-        $this->assertNotEmpty($this->columnKeys);
-//        $this->markTestIncomplete('Not implemented yet.');
-    }
+//    public function testInitialization()
+//    {
+//        $this->assertObjectHasAttribute("_whitelist", $this->CrudData);
+//        $this->assertNotEmpty($this->columnKeys);
+////        $this->markTestIncomplete('Not implemented yet.');
+//    }
     
     /**
      * Test the whitelist function with an empty whitelist
