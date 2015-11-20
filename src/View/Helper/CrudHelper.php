@@ -185,6 +185,8 @@ class CrudHelper extends Helper
 			$this->currentStrategy = $this->CrudData->strategy();
 			$this->Renderer = $this->DecorationSetups->make($this->currentStrategy);
 			
+			$this->setActions();
+			
 			// THIS IS BEING REFACTORED TO HAPPEN SEPARATELY
 			// BUT IS USED IN 6 PLACES
 //			$this->Field = $this->createFieldHandler($this->CrudData->strategy());
@@ -194,7 +196,15 @@ class CrudHelper extends Helper
 		// need an exception here
 	}
 	
-	/**
+	public function setActions($alias = NULL, $action = NULL) {
+		$alias = is_null($alias) ? $this->currentModel : $alias;
+		$action = is_null($action) ? $this->currentStrategy : $action;
+		$this->ModelActions->load($alias, $action);
+		$this->AssociationActions->load($alias, $action);
+		$this->RecordActions->load($alias, $action);
+	}
+
+		/**
 	 * The call to get product for you page. Will also do default setup if it's not done yet
 	 * 
 	 * The $column had better be one of the indexes in CrudData->column() or 

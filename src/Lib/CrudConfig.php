@@ -133,8 +133,10 @@ trait CrudConfig {
 	 */
 	protected function configActionPatterns() {
 		$this->configModelActions();
+		debug($this->_ModelActions);
 		$this->configAssociationActions();
 		$this->configRecordActions();
+		die;
 	}
 	
 	/**
@@ -144,7 +146,9 @@ trait CrudConfig {
 	 */
 	protected function configModelActions() {
 		if(!$this->_ModelActions){
-			$this->_ModelActions = new ActionPattern(['default' => $this->_defaultModelActionPatterns]);
+			$this->_ModelActions = new ActionPattern($this->request, [
+				'tools' => ['default' => $this->_defaultModelActionPatterns]
+			]);
 		}
 		return $this->_ModelActions;
 	}
@@ -156,7 +160,7 @@ trait CrudConfig {
 	 */
 	protected function configAssociationActions() {
 		if(!$this->_AssociationActions){
-			$this->_AssociationActions = new ActionPattern(['default' => $this->_defaultAssociationActionPatterns]);
+			$this->_AssociationActions = new ActionPattern($this->request, ['default' => $this->_defaultAssociationActionPatterns]);
 		}
 		return $this->_AssociationActions;
 	}
@@ -168,7 +172,7 @@ trait CrudConfig {
 	 */
 	protected function configRecordActions() {
 		if(!$this->_RecordActions){
-			$this->_RecordActions = new ActionPattern(['default' => $this->_defaultRecordActionPatterns]);
+			$this->_RecordActions = new ActionPattern($this->request, ['default' => $this->_defaultRecordActionPatterns]);
 		}
 		return $this->_RecordActions;
 	}
