@@ -1,19 +1,18 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+use Cake\Core\InstanceConfigTrait;
+
 
 /**
  * Description of AP
  *
  * @author dondrake
  */
-class AP {
+class AP implements Iterator {
 	
-	protected $_members;
+	use InstanceConfigTrait;
+
+	protected $_defaultConfig;
 	protected $_keys;
 	
 	protected $alias;
@@ -43,11 +42,24 @@ class AP {
 		
 	}
 	
-	public function label() {
+	public function current() {
 		
 	}
-	
-	public function action() {
+
+	public function key() {
 		
 	}
+
+	public function next() {
+		
+	}
+
+	public function rewind() {
+		
+	}
+
+	public function valid() {
+		
+	}
+
 }
