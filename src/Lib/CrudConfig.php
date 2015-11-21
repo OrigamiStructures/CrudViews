@@ -36,17 +36,18 @@ trait CrudConfig {
 	protected $blacklist = ['created', 'modified', 'id'];
 	
 	protected $_defaultModelActionPatterns = [
-		'index' => [['new' => 'add']],
-		'add' => [['list' => 'index']],
-		'view' => [['List' => 'index'], 'edit', ['new' => 'add'], 'delete'],
-		'edit' => [['List' => 'index'], ['new' => 'add'], 'delete']
+//		'index' => ['new' => 'add'],
+		'index' => ['List' => 'index', 'edit', 'new' => 'add', 'delete'],
+		'add' => ['list' => 'index'],
+		'view' => ['List' => 'index', 'edit', 'new' => 'add', 'delete'],
+		'edit' => ['List' => 'index', 'new' => 'add', 'delete']
 	];
 	
 	protected $_defaultAssociationActionPatterns = [
-		'index' => [['List' => 'index'], ['new' => 'add']],
-		'add' => [['List' => 'index'], ['new' => 'add']],
-		'view' => [['List' => 'index'], ['new' => 'add']],
-		'edit' => [['List' => 'index'], ['new' => 'add']]
+		'index' => ['List' => 'index', 'new' => 'add'],
+		'add' => ['List' => 'index', 'new' => 'add'],
+		'view' => ['List' => 'index', 'new' => 'add'],
+		'edit' => ['List' => 'index', 'new' => 'add']
 	];
 		protected $_defaultRecordActionPatterns = [
 		'index' => ['view', 'edit', 'delete'],
@@ -133,10 +134,8 @@ trait CrudConfig {
 	 */
 	protected function configActionPatterns() {
 		$this->configModelActions();
-		debug($this->_ModelActions);
 		$this->configAssociationActions();
 		$this->configRecordActions();
-		die;
 	}
 	
 	/**
