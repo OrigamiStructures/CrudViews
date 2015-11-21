@@ -3,6 +3,8 @@ namespace CrudViews\Lib;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\Network\Request;
+use Cake\Collection\Collection as Coll;
+use Cake\Utility\Hash;
 
 
 /**
@@ -59,41 +61,23 @@ class ActionPattern {
 		if (is_null($path)) {
 			$path = $this->currentPath();
 		}
-		$this->tools = \Cake\Utility\Hash::get($this->_tools, $path);
+//		if (!stristr($path, '.')) {
+//			throw new \BadMethodCallException('Load path must be in the form alias.action.');
+//		}
+		$t = Hash::get($this->_tools, $path);
+		$t = is_null($t) ? [] : $t;
+		$this->tools = [];
+		foreach ($t as $key => $tool) {
+			if (is_int($key)) {
+				$this->tools[ucfirst($tool)] = $tool;
+			} else {
+				$this->tools[ucfirst($key)] = $tool;
+			}
+		}
+		debug($this->tools);
+		return $this->tools;
 	}
-	
-	public function keys() {
-		return $this->_keys;
-	}
-	
-	public function has($path) {
 		
-	}
-	
-	public function remove($path) {
-		
-	}
-	
-	public function current() {
-		
-	}
-
-	public function key() {
-		
-	}
-
-	public function next() {
-		
-	}
-
-	public function rewind() {
-		
-	}
-
-	public function valid() {
-		
-	}
-	
 	public function __debugInfo() {
 		return [
 			'[protected] _action' => $this->_action,
