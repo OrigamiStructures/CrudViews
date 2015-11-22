@@ -81,6 +81,13 @@ class CrudHelper extends Helper
 		$this->useCrudData($this->_defaultAlias->name);
     }
 	
+	/**
+	 * Pass through calls to CrudData
+	 * 
+	 * @param string $method
+	 * @param array $params
+	 * @return mixed
+	 */
 	public function __call($method, $params = []) {
 		if (method_exists($this->CrudData, $method)) {
 			switch (count($params)) {
@@ -93,7 +100,7 @@ class CrudHelper extends Helper
 				case 2:
 					return $this->CrudData->$method($params[0], $params[1]);
 					break;
-				case 3:
+				default:
 					return $this->CrudData->$method($params[0], $params[1], $params[2]);
 					break;
 			}
@@ -110,33 +117,21 @@ class CrudHelper extends Helper
 	 */
 	public function useActionPattern($grouping, $alias, $view) {
 		$alias = ucfirst($alias);
+		$target = ucfirst($grouping) . 'Actions';
+		$property = "_$target";
 		
-		switch (strtolower($grouping)) {
-			case 'model':
-				$target = 'ModelActions';
-				$property = "_$target";
-				break;
-			case 'association':
-				$target = 'AssociationActions';
-				$property = "_$target";
-				break;
-			case 'record':
-				$target = 'RecordActions';
-				$property = "_$target";
-				break;
-			default:
-				return []; // !!!!!**** This should throw some error. Must be one of the three to be valid
-				break;
-		}
-		$this->$target = $this->$property->load("$alias.$view");
+		$this->$target = $this->$property->load($alias, $view);
 		
 		// If we found no actions, check for defaults for this view
-		if (empty($this->$target->content)) {
-			$tryDefault = $this->$property->load("default.$view");
-			If (!empty($tryDefault->content)) {
-				$this->$target = $tryDefault;
-			}
-		}
+		// NEW NEW
+		// I think ActionPatter::load() now takes care of this
+		// NEW NEW
+//		if (empty($this->$target->content)) {
+//			$tryDefault = $this->$property->load("default.$view");
+//			If (!empty($tryDefault->content)) {
+//				$this->$target = $tryDefault;
+//			}
+//		}
 		return $this->$target;
 	}
 	
@@ -151,20 +146,7 @@ class CrudHelper extends Helper
 	 */
 	public function addActionPattern($grouping, $path, $data = FALSE, $replace = FALSE) {
 		
-		switch (strtolower($grouping)) {
-			case 'model':
-				$target = '_ModelActions';
-				break;
-			case 'association':
-				$target = '_AssociationActions';
-				break;
-			case 'record':
-				$target = '_RecordActions';
-				break;
-			default:
-				return []; // !!!!!**** This should throw some error. Must be one of the three to be valid
-				break;
-		}
+		$target = '_' . ucfirst($grouping) . 'Actions';
 		$this->$target->add($path, $data, $replace);
 	}
 		
@@ -185,6 +167,7 @@ class CrudHelper extends Helper
 			$this->currentStrategy = $this->CrudData->strategy();
 			$this->Renderer = $this->DecorationSetups->make($this->currentStrategy);
 			
+			debug('the big reveal');
 			$this->setActions();
 			
 			// THIS IS BEING REFACTORED TO HAPPEN SEPARATELY
@@ -199,9 +182,9 @@ class CrudHelper extends Helper
 	public function setActions($alias = NULL, $action = NULL) {
 		$alias = is_null($alias) ? $this->currentModel : $alias;
 		$action = is_null($action) ? $this->currentStrategy : $action;
-		$this->ModelActions->load($alias, $action);
-		$this->AssociationActions->load($alias, $action);
-		$this->RecordActions->load($alias, $action);
+		$this->ModelActions = $this->_ModelActions->load($alias, $action);
+		$this->AssociationActions = $this->_AssociationActions->load($alias, $action);
+		$this->RecordActions = $this->_RecordActions->load($alias, $action);
 	}
 
 		/**
@@ -273,11 +256,17 @@ class CrudHelper extends Helper
 			'_nativeModelActionPatterns', 
 			'_associatedModelActionPatterns',
 			'_recordActionPatterns',
+			'ModelActions',
+			'AssociationActions',
+			'RecordActions',			
+			'_ModelActions',
+			'_AssociationActions',
+			'_RecordActions',			
 //			'_nativeModelActionDisplay',
 //			'_associatedModelWhitelist',
 //			'_associatedModelBlacklist',
-			'_CrudData',
-			'CrudData'
+//			'_CrudData',
+//			'CrudData'
 		];
 		foreach ($properties as $name) {
 			$properties[$name] = $this->$name;
