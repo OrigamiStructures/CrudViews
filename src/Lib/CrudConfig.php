@@ -36,8 +36,8 @@ trait CrudConfig {
 	protected $blacklist = ['created', 'modified', 'id'];
 	
 	protected $_defaultModelActionPatterns = [
-//		'index' => ['new' => 'add'],
-		'index' => ['List' => 'index', 'edit', 'new' => 'add', 'delete'],
+		'index' => ['new' => 'add'],
+//		'index' => ['List' => 'index', 'edit', 'new' => 'add', 'delete'],
 		'add' => ['list' => 'index'],
 		'view' => ['List' => 'index', 'edit', 'new' => 'add', 'delete'],
 		'edit' => ['List' => 'index', 'new' => 'add', 'delete']
@@ -159,7 +159,9 @@ trait CrudConfig {
 	 */
 	protected function configAssociationActions() {
 		if(!$this->_AssociationActions){
-			$this->_AssociationActions = new ActionPattern($this->request, ['default' => $this->_defaultAssociationActionPatterns]);
+			$this->_AssociationActions = new ActionPattern($this->request, [
+				'tools' => ['default' => $this->_defaultAssociationActionPatterns]
+			]);
 		}
 		return $this->_AssociationActions;
 	}
@@ -171,7 +173,9 @@ trait CrudConfig {
 	 */
 	protected function configRecordActions() {
 		if(!$this->_RecordActions){
-			$this->_RecordActions = new ActionPattern($this->request, ['default' => $this->_defaultRecordActionPatterns]);
+			$this->_RecordActions = new ActionPattern($this->request, [
+				'tools' => ['default' => $this->_defaultRecordActionPatterns]
+			]);
 		}
 		return $this->_RecordActions;
 	}
