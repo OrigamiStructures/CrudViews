@@ -1,6 +1,7 @@
 <?php
 	$modelActions = $this->Crud->useActionPattern('model', $this->Crud->alias()->modelName, $this->request->action);
 	$entity = isset(${$this->Crud->alias()->variableName}) ? ${$this->Crud->alias()->variableName} : NULL;
+	$entity = is_null($entity) && isset(${$this->Crud->alias()->singularName}) ? ${$this->Crud->alias()->singularName} : NULL;
 ?>
 <ul class="side-nav">
 
