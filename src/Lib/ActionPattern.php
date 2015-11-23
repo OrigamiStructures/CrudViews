@@ -20,28 +20,65 @@ class ActionPattern {
 		'action' => '',
 		'tools' => [],
 	];
+	
+	/**
+	 * All the configured aliases, their actions and tool sets
+	 *
+	 * @var array
+	 */
 	protected $_tools;
 
-
+	/**
+	 * The currently targeted alias
+	 *
+	 * @var string
+	 */
 	protected $_alias = 'default';
+	
+	/**
+	 * The currently targeted action
+	 *
+	 * @var string
+	 */
 	protected $_action;
 	
+	/**
+	 * The labels => actions for the current alias/action
+	 *
+	 * @var array
+	 */
 	public $tools = [];
+	
+	/**
+	 * The current Request object
+	 *
+	 * @var Request
+	 */
 	protected $request;
 
-
+	/**
+	 * Build the object
+	 * 
+	 * Set up with the provided configuration 
+	 * then establish the requested target tool set or a default. 
+	 * Default will be extracted from the Request (controller/action).
+	 * 
+	 * @param Request $request
+	 * @param array $config
+	 */
 	public function __construct(Request $request, $config) {
 		$this->request = $request;
 		$this->config($config);
-		
-//		$this->_alias = empty($this->_config['alias']) ? strtolower($this->request->controller) : $this->_config['alias'];
-//		$this->_action = empty($this->_config['action']) ? $this->request->action : $this->_config['action'];
 		$this->_tools = $this->_config['tools'];
-		
 		$this->load($this->buildPath());
-//		debug($this);
 	}
 	
+	/**
+	 * Get all keys (aliases) or check existance of one
+	 * 
+	 * @param string $key
+	 * @return mexed
+	 */
 	public function keys($key = NULL) {
 		if (is_null($key)) {
 			return array_keys($this->_tools);
@@ -58,23 +95,18 @@ class ActionPattern {
 	public function buildPath($alias = NULL, $action = NULL) {
 		
 		if (is_null($alias)) {
-//			debug(1);
 			$this->_alias = $this->_alias;
 		} else {
-//			debug(2);
 			$this->alias = $alias;
 		}
 		
 		if (!$this->keys($this->_alias)) {
-//			debug(3);
 			$this->_alias = 'default';
 		}
 		
 		if (is_null($action)) {
-//			debug(4);
 			$this->_action = $this->request->action;
 		} else {
-//			debug(5);
 			$this->_action = $action;
 		}
 		
@@ -87,10 +119,7 @@ class ActionPattern {
 	 * @param type $path
 	 */
 	public function load($alias = NULL, $action = NULL) {
-			$path = $this->buildPath();
-//		if (!stristr($path, '.')) {
-//			throw new \BadMethodCallException('Load path must be in the form alias.action.');
-//		}
+		$path = $this->buildPath();
 		$t = Hash::get($this->_tools, $path);
 		$t = is_null($t) ? [] : $t;
 		$this->tools = [];
@@ -116,4 +145,73 @@ class ActionPattern {
 			];
 	}
 
+	public function add($path, $data = FALSE, $replace = FALSE) {
+		if (is_array($path)) {
+			$this->addModels($path, $data); // which are actually $data, $replace in this case
+			
+		} elseif (is_string($path)) {
+			$levels = explode('.', $path);
+			switch (count($levels)) {
+				case 1: // alias level stable ->add('Users', [])
+					$this->addViews($data, $replace);
+					break;
+				case 2: // view level stable ->add('Users.index', [])
+					$this->addTools($data, $levels[1], $replace);
+					break;
+			}
+		}
+	}
+	
+	/**
+	 * Add or overwrite one or more action sets in the collection
+	 * 
+	 * This will effect an alias level. All the current settings for any 
+	 * referenced alias will be removed and replaced by the new settings.
+	 * 
+	 * <pre>
+	 * [
+	 *	'alias' => [
+	 *		'view' => ['action', ['label' => 'action'], 'action'],
+	 *		'view' => ['action']
+	 *	],
+	 *	'more-as-desired' => ['view' => ['action']]
+	 * ]
+	 * </pre>
+	 * 
+	 * @param array $aliasSettings
+	 */
+	protected function addModels($aliasSettings, $replace = FALSE) {
+
+		foreach ($aliasSettings as $alias => $viewSettings) {
+			if ($replace) {
+				
+			} else {
+				
+			}
+			$this->addViews($viewSettings, $replace);
+		}
+	}
+	
+	protected function addViews($viewSettings, $replace = FALSE) {
+		foreach ($viewSettings as $view => $toolSettings) {
+			if ($replace) {
+				
+			} else {
+				
+			}
+			$this->addTools($toolSettings, $view, $replace);
+		}
+	}
+	
+	protected function addTools($toolSettings, $view, $replace = FALSE) {
+		foreach ($toolSettings as $action) {
+			
+		}
+		if ($replace) {
+			
+		} else {
+			
+		}
+	}
+	
 }
