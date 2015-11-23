@@ -27,9 +27,8 @@ if (isset($flag)) {
 				?>
 	            <td class="actions">
 					<?php
-					$tools = $this->Crud->useActionPattern('record', $this->Crud->alias('string'), 'index');
-					foreach ($tools->content as $tool) {
-						echo $this->Crud->RecordAction->output($tools, $tool, $entity) . '               ';
+					foreach ($this->Crud->RecordActions as $label => $tool) {
+						echo $this->Crud->RecordAction->output($tool, $label, $entity) . '               ';
 					}
 					?>
 	            </td>

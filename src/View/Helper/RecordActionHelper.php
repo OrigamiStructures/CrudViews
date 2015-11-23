@@ -33,11 +33,11 @@ class RecordActionHelper extends Helper {
 	 * @param type $entity
 	 * @return type
 	 */
-	public function output($tools, $tool, $entity) {
-		if (method_exists($this, $tools->parse->action($tool))) {
-			return $this->{$tools->parse->action($tool)}($tools, $tool, $entity);
+	public function output($tool, $label, $entity) {
+		if (method_exists($this, $tool)) {
+			return $this->$tool($tool, $label, $entity);
 		} else {
-			return $this->Html->link(__($tools->parse->label($tool)), ['action' => $tools->parse->action($tool), $entity->id]);
+			return $this->Html->link(__($label), ['action' => $tool, $entity->id]);
 		}
 	}
 	
@@ -49,10 +49,10 @@ class RecordActionHelper extends Helper {
 	 * @param type $entity
 	 * @return type
 	 */
-	public function delete($tools, $tool, $entity){
+	public function delete($tool, $label, $entity){
 		return $this->Form->postLink(
-				__($tools->parse->label($tool)), 
-				['action' => $tools->parse->action($tool), $entity->id], 
+				__($label), 
+				['action' => $tool, $entity->id], 
 				['confirm' => __('Are you sure you want to delete # {0}?', $entity->id)]);
 	}
 	
@@ -68,13 +68,13 @@ class RecordActionHelper extends Helper {
 		return '<form>' . $this->Form->input('example', ['label' => $tools->parse->label($tool)]) . '<button>Click</button></form>';
 	}
 	
-	public function submit($tools, $tool, $entity) {
+	public function submit($tool, $label, $entity) {
 		if (isset($entity->_uuid)) {
 			$attributes = ['form' => $entity->_uuid->uuid('form')];
 		} else {
 			$attributes = [];
 		}
-		return $this->Form->submit($tools->parse->label($tool), $attributes);
+		return $this->Form->submit($label, $attributes);
 
 	}
 	

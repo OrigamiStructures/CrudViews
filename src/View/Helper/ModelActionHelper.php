@@ -54,11 +54,9 @@ class ModelActionHelper extends Helper {
 				$targetName = $alias->singularHumanName;
 			}
 //			debug($tools->parse->action($tool));
-//			debug($tool);
-//			debug($tools);
 			return $this->Html->link(
 					__("$label $targetName"), 
-					['controller' => $alias->_variableName, 'action' => $tool]
+					['controller' => $alias->variableName, 'action' => $tool]
 			);
 		}
 	}
