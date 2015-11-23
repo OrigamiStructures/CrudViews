@@ -145,6 +145,17 @@ class ActionPattern {
 			];
 	}
 
+	/**
+	 * Set or reset some level of the master _tools array
+	 * 
+	 * $path = array to merge new alias directly into master. 
+	 * $path = 'alias.action' + data array as an alternative
+	 * $path = 'alias' + data array as a 3rd alternative
+	 * 
+	 * @param array|string $path
+	 * @param array $data
+	 * @param boolean $replace
+	 */
 	public function add($path, $data = FALSE, $replace = FALSE) {
 		if (is_array($path)) {
 			$this->addModels($path, $data); // which are actually $data, $replace in this case
