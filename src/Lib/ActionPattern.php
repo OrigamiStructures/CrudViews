@@ -90,6 +90,15 @@ class ActionPattern {
 	/**
 	 * Get the dot notation of the alias and action or a default path
 	 * 
+	 * _alias and _action are always kept current. __construct sets them to 
+	 * something meaningful also. So, calling with NULLs will get the current 
+	 * values concatenated as a dot-path. The args can be set independently. 
+	 * 
+	 * Also, the alias is checked for existance and if missing is changed 
+	 * to 'default'. This is to allow automatic operation in a 'plain crud' 
+	 * environment without requiring special Action configurations. The 
+	 * 'defaults' should 'just work'.
+	 * 
 	 * @return type string
 	 */
 	public function buildPath($alias = NULL, $action = NULL) {
@@ -104,9 +113,7 @@ class ActionPattern {
 			$this->_alias = 'default';
 		}
 		
-		if (is_null($action)) {
-			$this->_action = $this->request->action;
-		} else {
+		if (!is_null($action)) {
 			$this->_action = $action;
 		}
 		
@@ -116,10 +123,12 @@ class ActionPattern {
 	/**
 	 * Establish a tool set as the current tool set
 	 * 
-	 * @param type $path
+	 * @param string $alias 
+	 * @param string $action
+	 * @return array the tool set [label => action]
 	 */
 	public function load($alias = NULL, $action = NULL) {
-		$path = $this->buildPath();
+		$path = $this->buildPath($alias, $action);
 		$t = Hash::get($this->_tools, $path);
 		$t = is_null($t) ? [] : $t;
 		$this->tools = [];
