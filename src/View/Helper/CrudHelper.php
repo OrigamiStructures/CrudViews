@@ -167,7 +167,6 @@ class CrudHelper extends Helper
 			$this->currentStrategy = $this->CrudData->strategy();
 			$this->Renderer = $this->DecorationSetups->make($this->currentStrategy);
 			
-			debug('the big reveal');
 			$this->setActions();
 			
 			// THIS IS BEING REFACTORED TO HAPPEN SEPARATELY
