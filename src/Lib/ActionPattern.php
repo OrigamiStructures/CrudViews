@@ -17,7 +17,7 @@ class ActionPattern {
 
 	protected $_defaultConfig = [
 		'alias' => 'default',
-		'action' => '',
+		'action' => NULL,
 		'tools' => [],
 	];
 	
@@ -26,7 +26,7 @@ class ActionPattern {
 	 *
 	 * @var array
 	 */
-	protected $_tools;
+	public $_tools;
 
 	/**
 	 * The currently targeted alias
@@ -69,8 +69,9 @@ class ActionPattern {
 	public function __construct(Request $request, $config) {
 		$this->request = $request;
 		$this->config($config);
+		$this->_action = !isset($config['action']) || is_null($config['action'])  ? $this->request->action : $config['action'];
 		$this->_tools = $this->_config['tools'];
-		$this->load($this->buildPath());
+		$this->load();
 	}
 	
 	/**
@@ -104,19 +105,27 @@ class ActionPattern {
 	public function buildPath($alias = NULL, $action = NULL) {
 		
 		if (is_null($alias)) {
+//			debug(1);
 			$this->_alias = $this->_alias;
 		} else {
+//			debug(2);
 			$this->alias = $alias;
 		}
 		
 		if (!$this->keys($this->_alias)) {
+//			debug(3);
 			$this->_alias = 'default';
 		}
 		
 		if (!is_null($action)) {
+//			debug(4);
+//			$this->_action = $this->request->action;
+//		} else {
+//			debug(5);
 			$this->_action = $action;
 		}
 		
+//		osd("$this->_alias.$this->_action", 'aslias.action');
 		return "$this->_alias.$this->_action";
 	}
 
@@ -142,6 +151,41 @@ class ActionPattern {
 		return $this->tools;
 	}
 		
+	/**
+	 * Overwrite old or set new tool values
+	 * 
+	 * Will do Hash::remove(path) then Hash::insert(path, data)
+	 * 
+	 * @param string $path
+	 * @param array $values
+	 */
+	public function set($path, $values = null) {
+		$this->remove($path);
+		$this->insert($path, $values);
+	}
+	
+	/**
+	 * Insert new action pattern according to Hash::insert rules
+	 * 
+	 * @param string $path
+	 * @param array $values
+	 * @return array
+	 */
+	public function insert($path, $values = null) {
+		$this->_tools = Hash::insert($this->_tools, $path, $values);
+		return $this->_tools;
+	}
+	
+	/**
+	 * Remove the data at the specified path from the tool set
+	 * 
+	 * @param string $path
+	 * @return array
+	 */
+	public  function remove($path) {
+		return Hash::remove($this->_tools, $path);
+	}
+	
 	public function __debugInfo() {
 		return [
 			'[protected] _action' => $this->_action,
@@ -154,84 +198,4 @@ class ActionPattern {
 			];
 	}
 
-	/**
-	 * Set or reset some level of the master _tools array
-	 * 
-	 * $path = array to merge new alias directly into master. 
-	 * $path = 'alias.action' + data array as an alternative
-	 * $path = 'alias' + data array as a 3rd alternative
-	 * 
-	 * @param array|string $path
-	 * @param array $data
-	 * @param boolean $replace
-	 */
-	public function add($path, $data = FALSE, $replace = FALSE) {
-		if (is_array($path)) {
-			$this->addModels($path, $data); // which are actually $data, $replace in this case
-			
-		} elseif (is_string($path)) {
-			$levels = explode('.', $path);
-			switch (count($levels)) {
-				case 1: // alias level stable ->add('Users', [])
-					$this->addViews($data, $replace);
-					break;
-				case 2: // view level stable ->add('Users.index', [])
-					$this->addTools($data, $levels[1], $replace);
-					break;
-			}
-		}
-	}
-	
-	/**
-	 * Add or overwrite one or more action sets in the collection
-	 * 
-	 * This will effect an alias level. All the current settings for any 
-	 * referenced alias will be removed and replaced by the new settings.
-	 * 
-	 * <pre>
-	 * [
-	 *	'alias' => [
-	 *		'view' => ['action', ['label' => 'action'], 'action'],
-	 *		'view' => ['action']
-	 *	],
-	 *	'more-as-desired' => ['view' => ['action']]
-	 * ]
-	 * </pre>
-	 * 
-	 * @param array $aliasSettings
-	 */
-	protected function addModels($aliasSettings, $replace = FALSE) {
-
-		foreach ($aliasSettings as $alias => $viewSettings) {
-			if ($replace) {
-				
-			} else {
-				
-			}
-			$this->addViews($viewSettings, $replace);
-		}
-	}
-	
-	protected function addViews($viewSettings, $replace = FALSE) {
-		foreach ($viewSettings as $view => $toolSettings) {
-			if ($replace) {
-				
-			} else {
-				
-			}
-			$this->addTools($toolSettings, $view, $replace);
-		}
-	}
-	
-	protected function addTools($toolSettings, $view, $replace = FALSE) {
-		foreach ($toolSettings as $action) {
-			
-		}
-		if ($replace) {
-			
-		} else {
-			
-		}
-	}
-	
 }
