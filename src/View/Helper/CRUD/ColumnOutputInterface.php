@@ -8,6 +8,8 @@ namespace CrudViews\View\Helper\CRUD;
  */
 interface ColumnOutputInterface {
 		
-	public function output($field, $options = []);
+	public function output($field);
+	
+	public function hasUuid();
 
 }

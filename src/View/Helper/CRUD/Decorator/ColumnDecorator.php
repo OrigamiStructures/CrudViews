@@ -53,8 +53,8 @@ class ColumnDecorator implements ColumnOutputInterface {
 	 * @param array $options options being sent to the next object in the sequence
 	 * @return string The product of the operation
 	 */
-	public function output($field, $options = array()) {
-		return $this->base->output($field, $options);
+	public function output($field) {
+		return $this->base->output($field);
 	}
 	
 	/**
