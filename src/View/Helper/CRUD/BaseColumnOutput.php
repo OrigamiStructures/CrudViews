@@ -123,5 +123,17 @@ class BaseColumnOutput implements ColumnOutputInterface {
 	protected function input($field, $options = []){
 		return $this->helper->Form->input($field, $this->helper->CrudData->attributes($field, 'input'));
 	}
-	
+
+	/**
+	 * Does the entity the helper is holding have a uuid?
+	 * 
+	 * When building forms (and possibly other times) it is useful to uniquely 
+	 * id the entity so that input IDs and the like can truely be unique.
+	 * 
+	 * @return boolean
+	 */
+	public function hasUuid() {
+		return !is_null($this->helper->entity->_uuid);
+	}
+
 }

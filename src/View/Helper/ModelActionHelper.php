@@ -28,29 +28,35 @@ class ModelActionHelper extends Helper {
 	 * defaults to controller/action/id links
 	 * if a named action is found, return that instead
 	 * 
-	 * @param object $tools
 	 * @param string $tool
-	 * @param object $name NameConvention
-	 * @return type
+	 * @param string $label
+	 * @param string|object $name \CrudViews\Lib\NameConvention
+	 * @return string Html output
 	 */
-	public function output($tools, $tool, $name, $entity = NULL) {
+	public function output($tool, $label, $alias = '', $entity = NULL) {
+//		debug(get_class($alias));
+		if (get_class($alias) !== 'CrudViews\Lib\NameConventions') {
+			$alias = new CrudViews\Lib\NameConventions($alias);
+		}
+//	debug($tool);
+//	debug($label);
+//	debug($alias);
+//	debug($entity);die;
 		// if there's a named action do it
-		if (method_exists($this, $tools->parse->action($tool))) {
-			return $this->{$tools->parse->action($tool)}($tools, $tool, $name, $entity);
+		if (method_exists($this, $tool)) {
+			return $this->$tool($label, $entity, $alias);
 			
 		// otherwise do a link to controller = name, action = tool
 		} else {
 //			debug($tool);
-			$targetName = $name->pluralHumanName;
-			if (in_array($tools->parse->action($tool), ['new', 'add'])) {
-				$targetName = $name->singularHumanName;
+			$targetName = $alias->pluralHumanName;
+			if (in_array($tool, ['new', 'add'])) {
+				$targetName = $alias->singularHumanName;
 			}
 //			debug($tools->parse->action($tool));
-//			debug($tool);
-//			debug($tools);
 			return $this->Html->link(
-					__($tools->parse->label($tool, $targetName)), 
-					['controller' => $name, 'action' => $tools->parse->action($tool)]
+					__("$label $targetName"), 
+					['controller' => $alias->variableName, 'action' => $tool]
 			);
 		}
 	}
@@ -63,17 +69,17 @@ class ModelActionHelper extends Helper {
 	 * @param object $name NameConvention
 	 * @return type
 	 */
-	public function delete($tools, $tool, $name, $entity){
+	public function delete($label, $entity){
 		return $this->Form->postLink(
-				__($tools->parse->label($tool)), 
-				['action' => $tools->parse->action($tool), $entity->id], 
+				__($label), 
+				['action' => 'delete', $entity->id], 
 				['confirm' => __('Are you sure you want to delete # {0}?', $entity->id)]);
 	}
 	
-	public function edit($tools, $tool, $name, $entity){
+	public function edit($label, $entity, $alias){
 		return $this->Html->link(
-				__($tools->parse->label($tool) . ' ' . $name->singularHumanName), 
-				['action' => $tools->parse->action($tool), $entity->id]
+				__($label . ' ' . $alias->singularHumanName), 
+				['action' => 'edit', $entity->id]
 			);
 	}
 	

@@ -12,7 +12,7 @@ $label = ucwords($this->request->action . ' ' . Cake\Utility\Inflector::singular
 			endforeach;
         if (!empty($associations['BelongsToMany'])) {
             foreach ($associations['BelongsToMany'] as $assocName => $assocData) {
-            echo $this->Form->input($assocData['property'] . '_ids', ['options' => ${$assocData['variable']}, 'multiple' => TRUE]);
+				echo $this->Form->input($assocData['property'] . '_ids', ['options' => ${$assocData['variable']}, 'multiple' => TRUE]);
             }
 		}
         ?>

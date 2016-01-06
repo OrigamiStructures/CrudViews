@@ -36,17 +36,18 @@ trait CrudConfig {
 	protected $blacklist = ['created', 'modified', 'id'];
 	
 	protected $_defaultModelActionPatterns = [
-		'index' => [['new' => 'add']],
-		'add' => [['list' => 'index']],
-		'view' => [['List' => 'index'], 'edit', ['new' => 'add'], 'delete'],
-		'edit' => [['List' => 'index'], ['new' => 'add'], 'delete']
+		'index' => ['new' => 'add'],
+//		'index' => ['List' => 'index', 'edit', 'new' => 'add', 'delete'],
+		'add' => ['list' => 'index'],
+		'view' => ['List' => 'index', 'edit', 'new' => 'add', 'delete'],
+		'edit' => ['List' => 'index', 'new' => 'add', 'delete']
 	];
 	
 	protected $_defaultAssociationActionPatterns = [
-		'index' => [['List' => 'index'], ['new' => 'add']],
-		'add' => [['List' => 'index'], ['new' => 'add']],
-		'view' => [['List' => 'index'], ['new' => 'add']],
-		'edit' => [['List' => 'index'], ['new' => 'add']]
+		'index' => ['List' => 'index', 'new' => 'add'],
+		'add' => ['List' => 'index', 'new' => 'add'],
+		'view' => ['List' => 'index', 'new' => 'add'],
+		'edit' => ['List' => 'index', 'new' => 'add']
 	];
 		protected $_defaultRecordActionPatterns = [
 		'index' => ['view', 'edit', 'delete'],
@@ -144,7 +145,9 @@ trait CrudConfig {
 	 */
 	protected function configModelActions() {
 		if(!$this->_ModelActions){
-			$this->_ModelActions = new ActionPattern(['default' => $this->_defaultModelActionPatterns]);
+			$this->_ModelActions = new ActionPattern($this->request, [
+				'tools' => ['default' => $this->_defaultModelActionPatterns]
+			]);
 		}
 		return $this->_ModelActions;
 	}
@@ -156,7 +159,9 @@ trait CrudConfig {
 	 */
 	protected function configAssociationActions() {
 		if(!$this->_AssociationActions){
-			$this->_AssociationActions = new ActionPattern(['default' => $this->_defaultAssociationActionPatterns]);
+			$this->_AssociationActions = new ActionPattern($this->request, [
+				'tools' => ['default' => $this->_defaultAssociationActionPatterns]
+			]);
 		}
 		return $this->_AssociationActions;
 	}
@@ -168,7 +173,9 @@ trait CrudConfig {
 	 */
 	protected function configRecordActions() {
 		if(!$this->_RecordActions){
-			$this->_RecordActions = new ActionPattern(['default' => $this->_defaultRecordActionPatterns]);
+			$this->_RecordActions = new ActionPattern($this->request, [
+				'tools' => ['default' => $this->_defaultRecordActionPatterns]
+			]);
 		}
 		return $this->_RecordActions;
 	}

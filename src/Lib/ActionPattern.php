@@ -1,197 +1,201 @@
 <?php
 namespace CrudViews\Lib;
 
-use CrudViews\Lib\Collection;
+use Cake\Core\InstanceConfigTrait;
+use Cake\Network\Request;
+use Cake\Utility\Hash;
+
 
 /**
- * ActionPattern - manage the Action Patterns that back up the Crud View model and record tool generation
- * 
- * Model and Record tool sets are stored in multi-layered structures.
- * The finished object (which this class returns and managages) is stored 
- * in one of three properties in CrudHelper. 
- * <pre>
- * property = CollectionObject -> [
- *		'model-alias' => CollectionObject [
- *			'action-name' => Object 
- *				->content = [array of actions and labels]
- *				->parser = tools to return a label or action given a content node
- *				->keys = [array of ... ?]
- *			]
- *		]
- * </pre>
- * So, on one of the three properties, the developer should be able to specify 
- * the model by alias and the view by its action name and get back the object 
- * that has an array of tools for that context.
- * 
- * There are tools here to make new structures, add information to structures, 
- * replace sections with new information, and remove sections completely. 
- * 
- * There are also tools to get all or part of a structure
- * 
- * ----------
- * Currently, the three properties hold Model actions, Associated Model actions, 
- * and Record actions. All three start with a 'default' set of actions if no 
- * model alias is known. The defaults will take care of cake-standard crud patterns.
- * ----------
+ * Description of AP
  *
  * @author dondrake
  */
 class ActionPattern {
 	
+	use InstanceConfigTrait;
+
+	protected $_defaultConfig = [
+		'alias' => 'default',
+		'action' => NULL,
+		'tools' => [],
+	];
+	
 	/**
+	 * All the configured aliases, their actions and tool sets
 	 *
-	 * @var CrudViews\Lib\Collection
+	 * @var array
 	 */
-	protected $group;
-	
-	private $alias_level;
-	
-	private $view_level;
-	
-	private $target;
-	
-	public $ToolParser;
-	
-	public $action_template;
-
-
-	public function __construct($data = FALSE) {
-		$this->ToolParser = new ToolParser();
-		$this->action_template = (object) ['content' => [], 'parse' => $this->ToolParser, 'keys' => []];
-		$this->group = new Collection();
-		if ($data) {
-			$this->addModels($data, TRUE);
-		}
-	}
+	public $_tools;
 
 	/**
-	 * Add or overwrite one or more action sets in the collection
-	 * 
-	 * This will effect an alias level. All the current settings for any 
-	 * referenced alias will be removed and replaced by the new settings.
-	 * 
-	 * <pre>
-	 * [
-	 *	'alias' => [
-	 *		'view' => ['action', ['label' => 'action'], 'action'],
-	 *		'view' => ['action']
-	 *	],
-	 *	'more-as-desired' => ['view' => ['action']]
-	 * ]
-	 * </pre>
-	 * 
-	 * @param array $aliasSettings
+	 * The currently targeted alias
+	 *
+	 * @var string
 	 */
-	protected function addModels($aliasSettings, $replace = FALSE) {
+	protected $_alias = 'default';
+	
+	/**
+	 * The currently targeted action
+	 *
+	 * @var string
+	 */
+	protected $_action;
+	
+	/**
+	 * The labels => actions for the current alias/action
+	 *
+	 * @var array
+	 */
+	public $tools = [];
+	
+	/**
+	 * The current Request object
+	 *
+	 * @var Request
+	 */
+	protected $request;
 
-		foreach ($aliasSettings as $alias => $viewSettings) {
-			$this->target = $this->group;
-			if ($replace) {
-				$this->newLevel($alias, new Collection());
-			} else {
-				$this->insureLevel($alias, new Collection());
-			}
-			$this->alias_level = $this->group->load($alias);
-			$this->addViews($viewSettings, $replace);
-		}
-		$this->clearScratchpad();
+	/**
+	 * Build the object
+	 * 
+	 * Set up with the provided configuration 
+	 * then establish the requested target tool set or a default. 
+	 * Default will be extracted from the Request (controller/action).
+	 * 
+	 * @param Request $request
+	 * @param array $config
+	 */
+	public function __construct(Request $request, $config) {
+		$this->request = $request;
+		$this->config($config);
+		$this->_action = !isset($config['action']) || is_null($config['action'])  ? $this->request->action : $config['action'];
+		$this->_tools = $this->_config['tools'];
+		$this->load();
 	}
 	
-	private function clearScratchpad() {
-		unset($this->target, $this->alias_level, $this->view_level);
-	}
-
-
-	protected function addViews($viewSettings, $replace = FALSE) {
-		foreach ($viewSettings as $view => $toolSettings) {
-			$this->target = $this->alias_level;
-			if ($replace) {
-				$this->newLevel($view, clone $this->action_template);
-			} else {
-				$this->insureLevel($view, clone $this->action_template);
-			}
-			$this->view_level = $this->alias_level->load($view);
-			$this->addTools($toolSettings, $view, $replace);
-		}
-	}
-	
-	protected function addTools($toolSettings, $view, $replace = FALSE) {
-//		$this->target = $this->view_level;
-		$content = [];
-		foreach ($toolSettings as $action) {
-			$content[$this->ToolParser->action($action)] = $action;
-		}
-		if ($replace) {
-			$this->target->add($view, (object) ['content' => $content, 'parse' => $this->ToolParser, 'keys' => array_keys($content)]);
+	/**
+	 * Get all keys (aliases) or check existance of one
+	 * 
+	 * @param string $key
+	 * @return mexed
+	 */
+	public function keys($key = NULL) {
+		if (is_null($key)) {
+			return array_keys($this->_tools);
 		} else {
-			$content = array_merge($this->target->load($view)->content, $content);
-			$this->target->load($view)->content = $content;
-			$this->target->load($view)->keys = array_keys($content);
+			return array_key_exists($key, $this->_tools);
 		}
 	}
 	
-	public function load($path) {
-		if (!is_string($path)) {
-			return $this->action_template;
+	/**
+	 * Get the dot notation of the alias and action or a default path
+	 * 
+	 * _alias and _action are always kept current. __construct sets them to 
+	 * something meaningful also. So, calling with NULLs will get the current 
+	 * values concatenated as a dot-path. The args can be set independently. 
+	 * 
+	 * Also, the alias is checked for existance and if missing is changed 
+	 * to 'default'. This is to allow automatic operation in a 'plain crud' 
+	 * environment without requiring special Action configurations. The 
+	 * 'defaults' should 'just work'.
+	 * 
+	 * @return type string
+	 */
+	public function buildPath($alias = NULL, $action = NULL) {
+		
+		if (is_null($alias)) {
+//			debug(1);
+			$this->_alias = $this->_alias;
+		} else {
+//			debug(2);
+			$this->alias = $alias;
 		}
-		$levels = explode('.', $path);
-		switch (count($levels)) {
-			case 1: // alias level stable ->add('Users', [])
-				$this->target = $this->group;
-				$this->insureLevel($levels[0], new Collection());
-				return $this->group->load($levels[0]);
-				break;
-			case 2: // view level stable ->add('Users.index', [])
-				$this->target = $this->group;
-				$this->insureLevel($levels[0], new Collection());
-				$this->target = $this->alias_level = $this->group->load($levels[0]);
-				$this->insureLevel($levels[1], $this->action_template);
-				return $this->alias_level->load($levels[1]);
-				break;
+		
+		if (!$this->keys($this->_alias)) {
+//			debug(3);
+			$this->_alias = 'default';
 		}
+		
+		if (!is_null($action)) {
+//			debug(4);
+//			$this->_action = $this->request->action;
+//		} else {
+//			debug(5);
+			$this->_action = $action;
+		}
+		
+//		osd("$this->_alias.$this->_action", 'aslias.action');
+		return "$this->_alias.$this->_action";
 	}
 
 	/**
+	 * Establish a tool set as the current tool set
 	 * 
-	 * @param type $path
-	 * @param type $data
-	 * @param type $replace
+	 * @param string $alias 
+	 * @param string $action
+	 * @return array the tool set [label => action]
 	 */
-	public function add($path, $data = FALSE, $replace = FALSE) {
-		if (is_array($path)) {
-			$this->addModels($path, $data); // which are actually $data, $replace in this case
-			
-		} elseif (is_string($path)) {
-			$levels = explode('.', $path);
-			switch (count($levels)) {
-				case 1: // alias level stable ->add('Users', [])
-					$this->target = $this->group;
-					$this->insureLevel($levels[0], new Collection());
-					$this->alias_level = $this->group->load($levels[0]);
-					$this->addViews($data, $replace);
-					break;
-				case 2: // view level stable ->add('Users.index', [])
-					$this->target = $this->group;
-					$this->insureLevel($levels[0], new Collection());
-					$this->target = $this->alias_level = $this->group->load($levels[0]);
-					$this->insureLevel($levels[1], $this->action_template);
-					$this->view_level = $this->alias_level->load($levels[1]);
-					$this->addTools($data, $levels[1], $replace);
-					break;
+	public function load($alias = NULL, $action = NULL) {
+		$path = $this->buildPath($alias, $action);
+		$t = Hash::get($this->_tools, $path);
+		$t = is_null($t) ? [] : $t;
+		$this->tools = [];
+		foreach ($t as $key => $tool) {
+			if (is_int($key)) {
+				$this->tools[ucfirst($tool)] = $tool;
+			} else {
+				$this->tools[ucfirst($key)] = $tool;
 			}
 		}
-		$this->clearScratchpad();
-	}
-	
-	protected function insureLevel($key, $data = NULL) {
-		if (!$this->target->has($key)) {
-			$this->newLevel($key, $data);
-		}
-	}
-
-	protected function newLevel($key, $data = NULL) {
-		$this->target->remove($key);
-		$this->target->add($key, $data);
+		return $this->tools;
 	}
 		
+	/**
+	 * Overwrite old or set new tool values
+	 * 
+	 * Will do Hash::remove(path) then Hash::insert(path, data)
+	 * 
+	 * @param string $path
+	 * @param array $values
+	 */
+	public function set($path, $values = null) {
+		$this->remove($path);
+		$this->insert($path, $values);
+	}
+	
+	/**
+	 * Insert new action pattern according to Hash::insert rules
+	 * 
+	 * @param string $path
+	 * @param array $values
+	 * @return array
+	 */
+	public function insert($path, $values = null) {
+		$this->_tools = Hash::insert($this->_tools, $path, $values);
+		return $this->_tools;
+	}
+	
+	/**
+	 * Remove the data at the specified path from the tool set
+	 * 
+	 * @param string $path
+	 * @return array
+	 */
+	public  function remove($path) {
+		return Hash::remove($this->_tools, $path);
+	}
+	
+	public function __debugInfo() {
+		return [
+			'[protected] _action' => $this->_action,
+			'[protected] _alias' => $this->_alias,
+			'[public] tools' => $this->tools,
+			'[protected] _tools' => $this->_tools,
+			'[protected] request->params' => $this->request->params,
+			'[protected] _config' => $this->_config, 
+			'[protected] _defaultConfig' => $this->_defaultConfig, 
+			];
+	}
+
 }
